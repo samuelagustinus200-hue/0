@@ -1,641 +1,1665 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DEPOT. by siahaan22</title>
-    
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💌 Pesan Cinta Spesial — SIAHAAN22</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Dancing+Script:wght@600;700&family=Montserrat:wght@300;400;600&display=swap');
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+:root {
+  --rose:#e8405a; --rose-light:#ff6b84; --rose-dark:#c0273e;
+  --cream:#fff9f0; --gold:#d4a843; --gold-light:#f0c96a;
+  --deep:#1a0a12; --burgundy:#7b1f3a; --mid:#2a1020;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Cormorant Garamond',serif;background:var(--deep);color:var(--cream);min-height:100vh;overflow-x:hidden;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ctext y='20' font-size='18'%3E❤️%3C/text%3E%3C/svg%3E") 12 12, auto}
 
-        :root {
-            --bg-gradient: linear-gradient(135deg, #ffe6f0 0%, #ffc1e3 100%);
-            --chat-bg: rgba(255, 255, 255, 0.45);
-            --header-bg: rgba(255, 255, 255, 0.6);
-            --text-main: #333;
-            --text-ai: #333;
-            --ai-msg-bg: #ffffff;
-            --input-bg: rgba(255, 255, 255, 0.9);
-            --input-area-bg: rgba(255, 255, 255, 0.7);
-            --modal-bg: white;
-            --border-color: rgba(255, 255, 255, 0.6);
-            --btn-close-bg: #f1f2f6;
-            --btn-close-text: #333;
-            --chip-bg: rgba(216, 27, 96, 0.1);
-            --chip-text: #d81b60;
-        }
+/* ── CANVAS ── */
+#particle-canvas{position:fixed;inset:0;pointer-events:none;z-index:0}
 
-        body.dark-mode {
-            --bg-gradient: linear-gradient(135deg, #1e1e2f 0%, #2a2a40 100%);
-            --chat-bg: rgba(30, 30, 45, 0.6);
-            --header-bg: rgba(30, 30, 45, 0.8);
-            --text-main: #f0f0f0;
-            --text-ai: #e0e0e0;
-            --ai-msg-bg: #2d2d44;
-            --input-bg: rgba(45, 45, 65, 0.9);
-            --input-area-bg: rgba(30, 30, 45, 0.8);
-            --modal-bg: #2a2a40;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --btn-close-bg: #3a3a5a;
-            --btn-close-text: #f0f0f0;
-            --chip-bg: rgba(255, 107, 157, 0.15);
-            --chip-text: #ff8ab1;
-        }
+/* ── PAGES ── */
+.page{display:none;min-height:100vh;position:relative;z-index:1}
+.page.active{display:block}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+/* ════════════════ CREATOR ════════════════ */
+#page-creator{background:linear-gradient(135deg,#0d0508 0%,#1a0a12 50%,#080d1a 100%);padding:40px 20px 80px}
 
-        body {
-            background: var(--bg-gradient); height: 100dvh; width: 100vw;
-            display: flex; justify-content: center; align-items: center; overflow: hidden;
-            transition: background 0.5s ease;
-        }
+.creator-header{text-align:center;margin-bottom:36px}
+.creator-header h1{font-family:'Dancing Script',cursive;font-size:clamp(2rem,5vw,3.5rem);color:var(--gold-light);animation:glow 2s ease-in-out infinite alternate}
+.creator-header p{font-style:italic;color:#cc88aa;margin-top:6px;font-size:1.05rem}
+.badge-version{display:inline-block;background:rgba(232,64,90,0.2);border:1px solid rgba(232,64,90,0.4);border-radius:20px;padding:4px 14px;font-size:.75rem;color:var(--rose-light);margin-top:8px;font-family:'Montserrat',sans-serif;letter-spacing:2px}
 
-        .chat-container {
-            width: 100%; max-width: 420px; height: 100dvh; 
-            background: var(--chat-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            display: flex; flex-direction: column; position: relative; z-index: 10;
-        }
+@keyframes glow{from{text-shadow:0 0 20px rgba(212,168,67,0.4)}to{text-shadow:0 0 60px rgba(212,168,67,1),0 0 100px rgba(232,64,90,0.5)}}
 
-        @media (min-width: 450px) {
-            .chat-container {
-                height: 90vh; border-radius: 24px; border: 1px solid var(--border-color);
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            }
-        }
+/* TABS */
+.tabs{display:flex;gap:6px;max-width:960px;margin:0 auto 20px;overflow-x:auto;padding-bottom:4px}
+.tab-btn{padding:10px 20px;border-radius:30px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#a08090;font-family:'Montserrat',sans-serif;font-size:.82rem;cursor:pointer;transition:.25s;white-space:nowrap;letter-spacing:.5px}
+.tab-btn.active{background:var(--rose);border-color:var(--rose);color:white;box-shadow:0 4px 16px rgba(232,64,90,0.4)}
+.tab-btn:hover:not(.active){border-color:var(--rose-light);color:var(--rose-light)}
 
-        header {
-            background: var(--header-bg); padding: 12px 20px; text-align: center;
-            border-bottom: 1px solid var(--border-color); backdrop-filter: blur(5px);
-            display: flex; justify-content: space-between; align-items: center; z-index: 20;
-        }
+.tab-panel{display:none}.tab-panel.active{display:block}
 
-        header .spacer { width: 35px; }
-        header .title-box h1 { font-size: 1.25rem; color: #d81b60; font-weight: 600; line-height: 1.2; }
-        header .title-box span { font-size: 0.75rem; color: #ec407a; font-weight: 400; opacity: 0.8; }
-        body.dark-mode header .title-box h1 { color: #ff6b9d; }
-        body.dark-mode header .title-box span { color: #ff8ab1; }
+.creator-grid{max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.creator-grid{grid-template-columns:1fr}}
 
-        .menu-btn {
-            background: none; border: none; cursor: pointer; width: 35px; height: 35px;
-            display: flex; justify-content: center; align-items: center; border-radius: 8px; transition: 0.2s;
-        }
-        .menu-btn:hover { background: rgba(216, 27, 96, 0.1); }
-        .menu-btn svg { fill: #d81b60; width: 24px; height: 24px; }
-        body.dark-mode .menu-btn svg { fill: #ff6b9d; }
+.card{background:rgba(255,255,255,0.035);border:1px solid rgba(212,168,67,0.18);border-radius:16px;padding:24px;backdrop-filter:blur(12px);transition:.3s}
+.card:hover{border-color:rgba(212,168,67,0.45);box-shadow:0 0 30px rgba(212,168,67,0.08)}
+.card.full{grid-column:1/-1}
 
-        .chat-box {
-            flex: 1; padding: 20px; overflow-y: auto; display: flex;
-            flex-direction: column; gap: 16px; scroll-behavior: smooth; position: relative;
-        }
-        .chat-box::-webkit-scrollbar { width: 4px; }
-        .chat-box::-webkit-scrollbar-thumb { background: rgba(216, 27, 96, 0.15); border-radius: 10px; }
+.card-title{font-family:'Playfair Display',serif;color:var(--gold-light);font-size:1.1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 
-        .message {
-            max-width: 85%; padding: 12px 16px; border-radius: 20px;
-            font-size: 0.9rem; line-height: 1.6; word-wrap: break-word;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        }
+label{display:block;font-size:.85rem;color:#c9a0a0;margin-bottom:5px;margin-top:12px}
+label:first-of-type{margin-top:0}
+input[type="text"],input[type="color"],input[type="date"],textarea,select{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.13);border-radius:10px;padding:10px 13px;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:1rem;transition:.3s;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--rose-light);box-shadow:0 0 0 3px rgba(232,64,90,0.15)}
+textarea{resize:vertical;min-height:90px}
+select option{background:#1a0a12}
+input[type="color"]{padding:4px 8px;height:40px;cursor:pointer}
+input[type="range"]{width:100%;accent-color:var(--rose);margin-top:4px}
+.color-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-        .user-msg {
-            background: linear-gradient(135deg, #e91e63 0%, #d81b60 100%); color: white;
-            align-self: flex-end; border-bottom-right-radius: 4px; white-space: pre-wrap;
-        }
+.hint{font-size:.75rem;color:#8a6070;margin-top:4px;font-style:italic}
 
-        .ai-msg {
-            background: var(--ai-msg-bg); color: var(--text-ai);
-            align-self: flex-start; border-bottom-left-radius: 4px; display: flex; flex-direction: column;
-        }
+/* Petal options */
+.petal-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.petal-opt{padding:7px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.18);cursor:pointer;font-size:.85rem;transition:.2s;color:var(--cream);background:transparent}
+.petal-opt.selected,.petal-opt:hover{background:var(--rose);border-color:var(--rose)}
 
-        .ai-msg p { margin-bottom: 8px; }
-        .ai-msg p:last-child { margin-bottom: 0; }
-        .ai-msg strong { color: #d81b60; }
-        body.dark-mode .ai-msg strong { color: #ff6b9d; }
-        .ai-msg ul, .ai-msg ol { padding-left: 20px; margin-bottom: 8px; }
-        
-        .ai-msg table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.85rem; overflow-x: auto; display: block; }
-        .ai-msg th, .ai-msg td { border: 1px solid var(--border-color); padding: 8px; text-align: left; }
-        .ai-msg th { background: rgba(216, 27, 96, 0.1); color: #d81b60; }
-        body.dark-mode .ai-msg th { background: rgba(255, 107, 157, 0.15); color: #ff8ab1; }
+/* Toggles */
+.toggle-row{display:flex;align-items:center;gap:12px;margin-top:10px}
+.toggle{position:relative;width:44px;height:24px;background:rgba(255,255,255,0.1);border-radius:12px;cursor:pointer;transition:background .3s;flex-shrink:0}
+.toggle.on{background:var(--rose)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:white;border-radius:50%;transition:transform .3s}
+.toggle.on::after{transform:translateX(20px)}
+.toggle-label{font-size:.88rem;color:#c9a0a0}
 
-        .code-container { margin: 10px 0; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15); background: #282c34; }
-        .code-header { display: flex; justify-content: space-between; align-items: center; background: #1e222b; padding: 6px 12px; font-size: 0.75rem; color: #abb2bf; font-family: monospace; }
-        .btn-copy-code { background: rgba(255,255,255,0.1); border: none; padding: 4px 8px; color: #abb2bf; border-radius: 4px; cursor: pointer; font-size: 0.7rem; transition: 0.2s; }
-        .btn-copy-code:hover { background: rgba(255,255,255,0.2); color: #fff; }
-        
-        .ai-msg pre { margin: 0; padding: 0; font-size: 0.85rem; font-family: monospace; }
-        .ai-msg pre code { padding: 12px; display: block; overflow-x: auto; background: transparent !important; }
-        
-        .ai-msg :not(pre) > code {
-            background: rgba(216, 27, 96, 0.08); padding: 2px 6px;
-            border-radius: 4px; font-family: monospace; color: #d81b60;
-        }
-        body.dark-mode .ai-msg :not(pre) > code { background: rgba(255, 107, 157, 0.2); color: #ff8ab1; }
+/* Music */
+.music-upload-btn{display:flex;align-items:center;gap:10px;background:rgba(232,64,90,0.12);border:1px dashed rgba(232,64,90,0.4);border-radius:10px;padding:11px 14px;cursor:pointer;color:var(--rose-light);font-size:.9rem;transition:background .3s;width:100%;text-align:left}
+.music-upload-btn:hover{background:rgba(232,64,90,0.22)}
+#music-file{display:none}
+#music-name{font-size:.78rem;color:#aaa;margin-top:5px;font-style:italic}
 
-        .action-btns { display: flex; gap: 8px; align-self: flex-end; margin-top: 8px; flex-wrap: wrap; }
-        
-        .tool-btn {
-            padding: 6px 12px; background: rgba(216, 27, 96, 0.1); border: none; border-radius: 12px;
-            color: #d81b60; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: 0.2s; 
-            display: flex; align-items: center; gap: 4px;
-        }
-        body.dark-mode .tool-btn { background: rgba(255, 107, 157, 0.15); color: #ff8ab1; }
-        .tool-btn:hover { background: rgba(216, 27, 96, 0.2); }
-        .btn-stop-audio { color: #e74c3c; background: rgba(231, 76, 60, 0.1); }
-        body.dark-mode .btn-stop-audio { color: #ff7675; background: rgba(255, 118, 117, 0.15); }
+/* Photo drop */
+.photo-drop{border:2px dashed rgba(212,168,67,0.3);border-radius:12px;padding:18px;text-align:center;cursor:pointer;color:#a08060;transition:.3s}
+.photo-drop:hover{border-color:var(--gold);color:var(--gold-light);background:rgba(212,168,67,0.05)}
+#photo-file{display:none}
+#photo-preview-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+#photo-preview-grid img{width:68px;height:68px;object-fit:cover;border-radius:8px;border:2px solid var(--gold);cursor:pointer;transition:.2s}
+#photo-preview-grid img:hover{transform:scale(1.1);border-color:var(--rose-light)}
 
-        .chips-container { display: flex; gap: 8px; padding: 0 16px 10px 16px; overflow-x: auto; scroll-behavior: smooth; z-index: 15; }
-        .chips-container::-webkit-scrollbar { display: none; }
-        .prompt-chip { background: var(--chip-bg); color: var(--chip-text); border: none; padding: 8px 14px; border-radius: 18px; font-size: 0.8rem; font-weight: 500; white-space: nowrap; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-        .prompt-chip:active { transform: scale(0.95); }
+/* Sticker picker */
+.sticker-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.sticker-btn{font-size:1.6rem;padding:6px;border-radius:8px;border:1px solid transparent;cursor:pointer;background:rgba(255,255,255,0.05);transition:.2s}
+.sticker-btn:hover,.sticker-btn.sel{background:rgba(232,64,90,0.25);border-color:var(--rose)}
+#selected-stickers{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:28px}
+.sel-sticker-tag{background:rgba(212,168,67,0.15);border:1px solid rgba(212,168,67,0.3);border-radius:20px;padding:3px 10px;font-size:1rem;cursor:pointer;transition:.2s}
+.sel-sticker-tag:hover{background:rgba(232,64,90,0.2)}
 
-        .typing-indicator {
-            display: none; align-self: flex-start; background: var(--ai-msg-bg);
-            padding: 14px 20px; border-radius: 20px; border-bottom-left-radius: 4px; margin-bottom: 4px;
-        }
-        .dot {
-            display: inline-block; width: 6px; height: 6px; background-color: #d81b60;
-            border-radius: 50%; margin: 0 2px; opacity: 0.7; animation: bounce 1.4s infinite ease-in-out both;
-        }
-        body.dark-mode .dot { background-color: #ff6b9d; }
-        .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+/* Font picker */
+.font-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.font-opt{padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);cursor:pointer;text-align:center;font-size:1.1rem;transition:.2s;background:transparent;color:var(--cream)}
+.font-opt:hover,.font-opt.sel{background:rgba(232,64,90,0.2);border-color:var(--rose)}
 
-        .scroll-bottom-btn {
-            position: absolute; bottom: 120px; right: 20px;
-            background: #d81b60; color: white; border: none;
-            width: 40px; height: 40px; border-radius: 50%;
-            display: none; justify-content: center; align-items: center;
-            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 15;
-            transition: 0.3s; font-size: 1.2rem;
-        }
-        body.dark-mode .scroll-bottom-btn { background: #ff6b9d; }
-        .scroll-bottom-btn:active { transform: scale(0.9); }
+/* Bg picker */
+.bg-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.bg-opt{height:44px;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:.2s}
+.bg-opt:hover,.bg-opt.sel{border-color:var(--gold-light);transform:scale(1.05)}
 
-        .input-area {
-            padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); 
-            background: var(--input-area-bg); border-top: 1px solid var(--border-color);
-            display: flex; gap: 10px; align-items: flex-end; z-index: 20;
-        }
+/* Link box */
+.link-preview-box{background:rgba(0,0,0,0.3);border:1px solid rgba(212,168,67,0.3);border-radius:10px;padding:13px;margin-top:10px;display:flex;align-items:center;gap:10px;overflow:hidden}
+#link-preview-text{color:var(--gold-light);word-break:break-all;flex:1;font-size:.88rem}
+.copy-link-btn{background:var(--gold);color:var(--deep);border:none;border-radius:8px;padding:7px 11px;font-size:.78rem;cursor:pointer;font-weight:700;transition:.2s;flex-shrink:0}
+.copy-link-btn:hover{background:var(--gold-light)}
 
-        .input-wrapper {
-            flex: 1; display: flex; align-items: flex-end;
-            background: var(--input-bg); border: 1px solid var(--border-color);
-            border-radius: 24px; padding: 2px 4px; transition: 0.3s;
-        }
-        .input-wrapper:focus-within { border-color: #d81b60; box-shadow: 0 0 0 2px rgba(216, 27, 96, 0.1); }
-        body.dark-mode .input-wrapper:focus-within { border-color: #ff6b9d; box-shadow: 0 0 0 2px rgba(255, 107, 157, 0.15); }
+/* Slug export box */
+.export-box{background:rgba(0,0,0,0.4);border:1px solid rgba(212,168,67,0.3);border-radius:12px;padding:16px;margin-top:12px}
+.export-box textarea{min-height:70px;font-size:.75rem;font-family:monospace;color:#88ccaa;background:rgba(0,0,0,0.3)}
 
-        .mic-btn {
-            background: none; border: none; font-size: 1.2rem; cursor: pointer; flex-shrink: 0;
-            padding: 10px 8px 10px 12px; margin-bottom: 2px; border-radius: 50%; color: #d81b60; transition: 0.3s;
-        }
-        body.dark-mode .mic-btn { color: #ff6b9d; }
-        .mic-btn.active { color: #e91e63; animation: pulse-mic 1.2s infinite; }
-        @keyframes pulse-mic { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+/* QR placeholder */
+#qr-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:12px}
+#qr-canvas{border:2px solid var(--gold);border-radius:10px;background:white;display:none}
 
-        .input-wrapper textarea {
-            flex: 1; border: none; background: transparent; color: var(--text-main);
-            padding: 12px 12px 12px 4px; font-size: 0.95rem; outline: none; width: 100%;
-            resize: none; overflow-y: auto; max-height: 120px; line-height: 1.4; font-family: inherit;
-        }
-        body.dark-mode .input-wrapper textarea::placeholder { color: #aaa; }
+/* Btn generate */
+.btn-generate{width:100%;padding:16px;background:linear-gradient(135deg,var(--rose-dark),var(--rose),var(--rose-light));border:none;border-radius:14px;color:white;font-family:'Playfair Display',serif;font-size:1.25rem;cursor:pointer;overflow:hidden;position:relative;transition:transform .2s,box-shadow .3s;box-shadow:0 6px 30px rgba(232,64,90,0.4)}
+.btn-generate:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(232,64,90,0.6)}
+.btn-generate:active{transform:scale(.97)}
 
-        .send-btn {
-            background: linear-gradient(135deg, #e91e63 0%, #d81b60 100%); color: white;
-            border: none; width: 46px; height: 46px; border-radius: 50%; cursor: pointer;
-            display: flex; justify-content: center; align-items: center; flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(216, 27, 96, 0.25); margin-bottom: 2px; transition: 0.2s;
-        }
-        .send-btn:active { transform: scale(0.95); }
-        .send-btn svg { width: 18px; height: 18px; fill: white; margin-left: 2px; }
+/* Preview */
+.preview-section{max-width:960px;margin:24px auto 0}
+.preview-title{font-family:'Dancing Script',cursive;color:var(--gold-light);font-size:1.4rem;text-align:center;margin-bottom:10px}
+#preview-frame{width:100%;height:520px;border:1px solid rgba(212,168,67,0.3);border-radius:16px;background:var(--deep)}
 
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
-            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(3px);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 100; opacity: 0; pointer-events: none; transition: 0.3s ease;
-        }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-content {
-            background: var(--modal-bg); padding: 24px; border-radius: 20px; text-align: center;
-            width: 85%; max-width: 320px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            transform: translateY(-20px) scale(0.95); transition: 0.3s ease;
-            max-height: 90vh; overflow-y: auto;
-        }
-        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
-        .modal-content h3 { color: #d81b60; margin-bottom: 5px; font-size: 1.15rem; }
-        body.dark-mode .modal-content h3 { color: #ff6b9d; }
-        .modal-content p { font-size: 0.85rem; color: var(--text-main); margin-bottom: 15px; }
-        .modal-content .ig-link { font-weight: 600; color: #e91e63; text-decoration: none; }
+/* Progress */
+.progress-bar{height:4px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;margin-top:6px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:4px;width:0;transition:width .5s}
 
-        .settings-grid { display: flex; gap: 10px; margin-bottom: 15px; flex-direction: column; text-align: left;}
-        .settings-grid label { font-size: 0.8rem; color: var(--text-main); font-weight: 500; margin-bottom: 4px; display: block; }
-        .settings-grid select, .search-bar, .color-picker {
-            width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--border-color);
-            font-size: 0.9rem; color: var(--text-main); background: var(--input-bg); outline: none;
-        }
-        .color-picker { padding: 2px; height: 42px; cursor: pointer; }
+/* ════════════════ VIEWER ════════════════ */
+#page-viewer{background:var(--deep);min-height:100vh}
 
-        .menu-action-btn {
-            border: none; padding: 12px; border-radius: 12px; width: 100%; 
-            font-size: 0.9rem; cursor: pointer; font-weight: 500; margin-bottom: 10px; transition: 0.2s;
-        }
-        .btn-dark { background: #4b6584; color: white; }
-        .btn-download { background: #20bf6b; color: white; }
-        .btn-clear { background: #ff4757; color: white; }
-        .btn-close { background: var(--btn-close-bg); color: var(--btn-close-text); margin-bottom: 0; }
+/* Animated bg */
+.viewer-bg{position:fixed;inset:0;pointer-events:none;z-index:0}
+.viewer-bg .orb{position:absolute;border-radius:50%;filter:blur(80px);animation:orbFloat 8s ease-in-out infinite}
+.orb-1{width:400px;height:400px;background:rgba(232,64,90,0.12);top:-100px;right:-100px;animation-delay:0s}
+.orb-2{width:300px;height:300px;background:rgba(212,168,67,0.08);bottom:-50px;left:-80px;animation-delay:-3s}
+.orb-3{width:250px;height:250px;background:rgba(180,60,120,0.1);top:50%;left:50%;animation-delay:-6s}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
 
-        .particle { position: fixed; top: -10vh; pointer-events: none; z-index: 20; opacity: 0.8; animation: fall linear forwards; }
-        .sakura { font-size: 1.2rem; filter: drop-shadow(0 0 2px rgba(255, 105, 180, 0.4)); }
-        .love { font-size: 0.8rem; opacity: 0.4; }
-        @keyframes fall { 0% { transform: translateY(0) rotate(0deg) translateX(0); } 100% { transform: translateY(110vh) rotate(360deg) translateX(30px); } }
-    </style>
+/* INTRO */
+#intro-overlay{position:fixed;inset:0;background:radial-gradient(circle at 50% 50%,#1a0a12 0%,#050208 70%);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .8s,transform .8s}
+#intro-overlay.hidden{opacity:0;pointer-events:none;transform:scale(1.05)}
+.intro-envelope{font-size:5rem;animation:pulseEnv 1.5s ease-in-out infinite}
+@keyframes pulseEnv{0%,100%{transform:scale(1) rotate(-3deg)}50%{transform:scale(1.12) rotate(3deg)}}
+.intro-text{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.2rem,3vw,1.9rem);color:var(--cream);text-align:center;padding:0 20px}
+.intro-subtext{color:var(--rose-light);font-size:1rem;font-style:italic}
+.intro-date{font-size:.85rem;color:var(--gold);margin-top:-8px}
+.btn-open{padding:15px 40px;background:transparent;border:2px solid var(--rose);border-radius:50px;color:var(--rose-light);font-family:'Playfair Display',serif;font-size:1.15rem;cursor:pointer;position:relative;overflow:hidden;transition:color .3s}
+.btn-open::before{content:'';position:absolute;inset:0;background:var(--rose);transform:scaleX(0);transform-origin:left;transition:transform .4s;z-index:-1}
+.btn-open:hover{color:white}
+.btn-open:hover::before{transform:scaleX(1)}
+.intro-sparkles{display:flex;gap:16px;font-size:1.6rem;animation:sparkle 2s ease-in-out infinite}
+@keyframes sparkle{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
+
+/* HERO */
+#hero-section{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;position:relative;overflow:hidden;z-index:1}
+#hero-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(232,64,90,0.12) 0%,transparent 70%)}
+
+.hero-from{font-family:'Montserrat',sans-serif;font-size:clamp(.8rem,2vw,1rem);color:var(--gold);letter-spacing:5px;text-transform:uppercase;margin-bottom:14px;opacity:0;animation:fadeUp .8s .3s forwards}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,7vw,5.5rem);line-height:1.15;margin-bottom:20px;opacity:0;animation:fadeUp .8s .6s forwards}
+.hero-title em{color:var(--rose-light);font-style:italic}
+.hero-subtitle{font-size:clamp(1rem,2.5vw,1.35rem);color:#c9a0b0;font-style:italic;max-width:580px;margin:0 auto 32px;opacity:0;animation:fadeUp .8s .9s forwards}
+.hero-date-badge{display:inline-block;background:rgba(212,168,67,0.1);border:1px solid rgba(212,168,67,0.3);border-radius:30px;padding:6px 20px;font-size:.85rem;color:var(--gold-light);margin-bottom:20px;opacity:0;animation:fadeUp .8s 1s forwards}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* Love meter */
+.love-meter-wrap{margin:10px auto 30px;max-width:340px;width:100%;opacity:0;animation:fadeUp .8s 1.1s forwards}
+.love-meter-label{display:flex;justify-content:space-between;font-size:.82rem;color:#c9a0b0;margin-bottom:7px}
+.love-meter-bar{height:9px;background:rgba(255,255,255,0.07);border-radius:9px;overflow:hidden;position:relative}
+.love-meter-fill{height:100%;background:linear-gradient(90deg,var(--rose-dark),var(--rose-light),#ff9ab2);border-radius:9px;width:0;transition:width 2.8s cubic-bezier(.16,1,.3,1)}
+.love-meter-bar::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 50%,rgba(255,255,255,0.1));pointer-events:none}
+
+/* Scroll indicator */
+.scroll-down{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;color:#a08080;font-size:.75rem;animation:scrollBounce 1.5s ease-in-out infinite;opacity:.6;font-family:'Montserrat',sans-serif;letter-spacing:2px}
+@keyframes scrollBounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+/* STICKERS FLOAT */
+.hero-stickers{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.float-sticker{position:absolute;font-size:2rem;animation:floatSticker 6s ease-in-out infinite}
+@keyframes floatSticker{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-20px) rotate(5deg)}}
+
+/* Typing effect */
+.typewriter{overflow:hidden;border-right:2px solid var(--rose-light);white-space:nowrap;animation:typing 3s steps(40,end),blink .75s step-end infinite}
+@keyframes typing{from{width:0}to{width:100%}}
+@keyframes blink{from,to{border-color:transparent}50%{border-color:var(--rose-light)}}
+
+/* QUIZ section */
+#quiz-section{padding:50px 24px;max-width:640px;margin:0 auto;text-align:center;z-index:1;position:relative}
+.quiz-title{font-family:'Dancing Script',cursive;font-size:2.2rem;color:var(--gold-light);margin-bottom:8px}
+.quiz-sub{color:#c9a0a0;font-style:italic;margin-bottom:28px;font-size:.95rem}
+.quiz-card{background:rgba(255,255,255,0.04);border:1px solid rgba(212,168,67,0.2);border-radius:16px;padding:28px;margin-bottom:16px}
+.quiz-q{font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:16px;color:var(--cream)}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quiz-opt{padding:11px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:1rem;cursor:pointer;transition:.2s}
+.quiz-opt:hover,.quiz-opt.correct{background:rgba(80,200,80,0.2);border-color:#50c850}
+.quiz-opt.wrong{background:rgba(232,64,90,0.2);border-color:var(--rose)}
+#quiz-result{font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--rose-light);margin-top:16px;min-height:40px}
+
+/* GALLERY */
+#photo-gallery{padding:55px 24px;max-width:900px;margin:0 auto;z-index:1;position:relative}
+.gallery-title{font-family:'Dancing Script',cursive;font-size:2.5rem;color:var(--gold-light);text-align:center;margin-bottom:28px}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:14px}
+.gallery-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;border:2px solid rgba(212,168,67,0.25);cursor:pointer;transition:.3s}
+.gallery-grid img:hover{transform:scale(1.06);box-shadow:0 8px 30px rgba(232,64,90,0.4);border-color:var(--rose-light)}
+
+/* Lightbox */
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+#lightbox.open{display:flex}
+#lightbox img{max-width:90vw;max-height:78vh;border-radius:12px;box-shadow:0 0 60px rgba(232,64,90,0.3)}
+#lightbox-close{position:absolute;top:18px;right:22px;font-size:2rem;color:white;cursor:pointer;background:none;border:none;transition:.2s}
+#lightbox-close:hover{transform:rotate(90deg)}
+.lightbox-caption{color:#c9a0a0;font-style:italic;font-size:.95rem}
+
+/* LETTER */
+#letter-section{padding:55px 24px;max-width:700px;margin:0 auto;text-align:center;z-index:1;position:relative}
+.divider{display:flex;align-items:center;gap:14px;max-width:380px;margin:0 auto 32px;color:rgba(212,168,67,0.4);font-size:1.1rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(212,168,67,0.2)}
+.letter-wrap{background:rgba(255,255,255,0.03);border:1px solid rgba(212,168,67,0.18);border-radius:20px;padding:36px;position:relative}
+.letter-wrap::before{content:'❝';position:absolute;top:-18px;left:22px;font-size:3.5rem;color:var(--rose);line-height:1}
+.letter-text{font-family:'Cormorant Garamond',serif;font-size:clamp(1.05rem,2.5vw,1.35rem);font-style:italic;line-height:2.1;color:var(--cream);white-space:pre-wrap;word-break:break-word}
+.letter-author{margin-top:22px;font-family:'Dancing Script',cursive;font-size:1.8rem;color:var(--rose-light)}
+.letter-stickers{font-size:1.8rem;margin-top:12px;letter-spacing:4px}
+
+/* TIMELINE */
+#timeline-section{padding:55px 24px;max-width:660px;margin:0 auto;z-index:1;position:relative}
+.timeline-title{font-family:'Dancing Script',cursive;font-size:2.2rem;color:var(--gold-light);text-align:center;margin-bottom:32px}
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--rose),var(--gold),transparent)}
+.timeline-item{position:relative;margin-bottom:28px;opacity:0;transform:translateX(-20px);transition:.6s}
+.timeline-item.visible{opacity:1;transform:translateX(0)}
+.timeline-dot{position:absolute;left:-22px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--rose);box-shadow:0 0 10px var(--rose);animation:pulseDot 1.5s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 6px var(--rose)}50%{box-shadow:0 0 16px var(--rose)}}
+.timeline-date{font-size:.8rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-family:'Montserrat',sans-serif;margin-bottom:4px}
+.timeline-text{font-size:1rem;color:var(--cream);font-style:italic}
+
+/* MOOD BOARD */
+#mood-section{padding:40px 24px;max-width:700px;margin:0 auto;text-align:center;z-index:1;position:relative}
+.mood-title{font-family:'Dancing Script',cursive;font-size:2rem;color:var(--gold-light);margin-bottom:20px}
+.mood-cards{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.mood-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px 24px;cursor:pointer;transition:.3s;font-size:1.5rem;text-align:center;min-width:80px}
+.mood-card:hover,.mood-card.active{transform:scale(1.12);border-color:var(--rose-light);box-shadow:0 6px 20px rgba(232,64,90,0.35)}
+.mood-label{font-size:.75rem;color:#c9a0a0;margin-top:6px;font-family:'Montserrat',sans-serif}
+#mood-reply{margin-top:20px;font-family:'Dancing Script',cursive;font-size:1.4rem;color:var(--rose-light);min-height:36px;transition:.4s}
+
+/* COUNTDOWN */
+#countdown-section{padding:50px 24px;text-align:center;z-index:1;position:relative}
+.cd-title{font-family:'Dancing Script',cursive;font-size:2.2rem;color:var(--gold-light);margin-bottom:20px}
+.cd-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.cd-unit{background:rgba(255,255,255,0.05);border:1px solid rgba(212,168,67,0.2);border-radius:14px;padding:18px 22px;min-width:75px}
+.cd-num{font-family:'Playfair Display',serif;font-size:2.4rem;color:var(--rose-light);display:block;animation:pulseCd 1s ease-in-out infinite}
+@keyframes pulseCd{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.cd-label{font-size:.72rem;color:#a08080;letter-spacing:2px;text-transform:uppercase;font-family:'Montserrat',sans-serif}
+
+/* RESPONSE */
+#response-section{padding:60px 24px 80px;max-width:600px;margin:0 auto;text-align:center;z-index:1;position:relative}
+.response-title{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.4rem,4vw,2.3rem);margin-bottom:10px}
+.response-sub{color:#c9a0a0;font-style:italic;margin-bottom:28px;font-size:1rem}
+.response-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-yes{padding:15px 46px;background:linear-gradient(135deg,#e84060,#ff6b84);border:none;border-radius:50px;color:white;font-family:'Playfair Display',serif;font-size:1.25rem;cursor:pointer;box-shadow:0 8px 30px rgba(232,64,90,0.4);transition:transform .2s,box-shadow .3s}
+.btn-yes:hover{transform:scale(1.1);box-shadow:0 12px 40px rgba(232,64,90,0.7)}
+.btn-no{padding:15px 46px;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:50px;color:#aaa;font-family:'Playfair Display',serif;font-size:1.25rem;cursor:pointer;transition:.2s;position:relative}
+.btn-no.escape{position:fixed;transition:top .1s,left .1s}
+
+/* CELEBRATION */
+#celebration{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:300;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:16px;padding:24px}
+#celebration.open{display:flex}
+.cel-emoji{font-size:4rem;animation:bounce 1s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+.cel-title{font-family:'Dancing Script',cursive;font-size:clamp(2rem,6vw,4rem);color:var(--rose-light);animation:glow 1.5s ease-in-out infinite alternate}
+.cel-sub{font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--cream);font-style:italic;max-width:480px;white-space:pre-wrap}
+.cel-from{font-family:'Dancing Script',cursive;color:var(--gold-light);font-size:1.4rem;margin-top:6px}
+.cel-stickers{font-size:2rem;margin-top:4px;letter-spacing:6px}
+.btn-cel-close{margin-top:16px;padding:11px 30px;background:var(--rose);border:none;border-radius:30px;color:white;font-size:.95rem;cursor:pointer;transition:.2s}
+.btn-cel-close:hover{background:var(--rose-dark)}
+
+/* MUSIC */
+#music-player{position:fixed;bottom:20px;right:20px;z-index:99;background:rgba(26,10,18,0.9);border:1px solid rgba(212,168,67,0.3);border-radius:50px;padding:9px 18px;display:flex;align-items:center;gap:11px;backdrop-filter:blur(12px);box-shadow:0 8px 30px rgba(0,0,0,0.4);transition:.3s}
+#music-player.hidden{opacity:0;pointer-events:none}
+.music-btn{width:34px;height:34px;background:var(--rose);border:none;border-radius:50%;color:white;font-size:.95rem;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center}
+.music-btn:hover{background:var(--rose-dark);transform:scale(1.1)}
+.music-info{font-size:.75rem;color:#c9a0a0;max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.music-vol{width:60px;accent-color:var(--rose)}
+.music-bars{display:flex;gap:2px;align-items:flex-end;height:18px}
+.bar{width:3px;background:var(--rose-light);border-radius:2px;animation:barAnim 1s ease infinite}
+.bar:nth-child(1){animation-delay:0s}.bar:nth-child(2){animation-delay:.15s}.bar:nth-child(3){animation-delay:.3s}
+@keyframes barAnim{0%,100%{height:3px}50%{height:16px}}
+.music-bars.paused .bar{animation-play-state:paused}
+
+/* Floating hearts */
+.floating-heart{position:fixed;font-size:1.5rem;pointer-events:none;z-index:50;animation:floatUp 3s ease-out forwards;opacity:0}
+@keyframes floatUp{0%{opacity:.9;transform:translateY(0) rotate(-10deg)}100%{opacity:0;transform:translateY(-80vh) rotate(10deg)}}
+
+/* SCROLL PROGRESS BAR */
+#scroll-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--rose),var(--gold));z-index:999;transition:width .1s;width:0}
+
+/* BACK TO TOP */
+#back-top{position:fixed;bottom:20px;left:20px;z-index:99;width:40px;height:40px;background:rgba(26,10,18,0.9);border:1px solid rgba(212,168,67,0.3);border-radius:50%;color:var(--gold);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.3s;opacity:0;pointer-events:none}
+#back-top.show{opacity:1;pointer-events:all}
+#back-top:hover{background:var(--rose);color:white;border-color:var(--rose)}
+
+/* TOAST */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(26,10,18,0.97);border:1px solid var(--gold);border-radius:30px;padding:10px 22px;color:var(--gold-light);font-size:.88rem;z-index:999;opacity:0;transition:opacity .4s;white-space:nowrap;pointer-events:none}
+#toast.show{opacity:1}
+
+/* COPYRIGHT */
+#copyright-bar{background:rgba(0,0,0,0.4);border-top:1px solid rgba(212,168,67,0.12);padding:18px 24px;text-align:center;position:relative;z-index:2}
+.cp-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px}
+.cp-logo{font-family:'Dancing Script',cursive;font-size:1.4rem;color:var(--gold-light);letter-spacing:1px}
+.cp-divider{color:rgba(212,168,67,0.3);font-size:1rem}
+.cp-text{font-size:.78rem;color:#807070;font-family:'Montserrat',sans-serif;letter-spacing:.5px}
+.cp-heart{color:var(--rose);animation:heartBeat 1.5s ease-in-out infinite}
+@keyframes heartBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+
+/* Creator copyright */
+.creator-copyright{max-width:960px;margin:28px auto 0;text-align:center}
+
+/* Responsive */
+@media(max-width:480px){.creator-grid{gap:14px}.card{padding:18px}.response-btns{flex-direction:column;align-items:center}.cd-num{font-size:1.8rem}.cd-unit{padding:12px 16px;min-width:60px}}
+</style>
 </head>
 <body>
 
-    <div class="chat-container">
-        <header>
-            <div class="spacer"></div>
-            <div class="title-box">
-                <h1>DEPOT.</h1>
-                <span>by siahaan22</span>
+<canvas id="particle-canvas"></canvas>
+<div id="scroll-progress"></div>
+<audio id="bg-audio" loop></audio>
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════
+     PAGE 1 — CREATOR
+══════════════════════════════════════ -->
+<div id="page-creator" class="page active">
+
+  <div class="creator-header">
+    <h1>💌 Love Message Creator</h1>
+    <p>Buat pesan cinta yang tak terlupakan — tanpa koding, tanpa API</p>
+    <div class="badge-version">✦ SIAHAAN22 ✦ NO API NEEDED ✦ 100% FREE ✦</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs" id="creator-tabs">
+    <button class="tab-btn active" onclick="switchTab('tab-identitas',this)">💕 Identitas</button>
+    <button class="tab-btn" onclick="switchTab('tab-pesan',this)">✍️ Pesan</button>
+    <button class="tab-btn" onclick="switchTab('tab-desain',this)">🎨 Desain</button>
+    <button class="tab-btn" onclick="switchTab('tab-media',this)">📸 Foto & Musik</button>
+    <button class="tab-btn" onclick="switchTab('tab-fitur',this)">⚙️ Fitur Ekstra</button>
+    <button class="tab-btn" onclick="switchTab('tab-timeline',this)">📅 Timeline</button>
+    <button class="tab-btn" onclick="switchTab('tab-link',this)">🔗 Link & QR</button>
+  </div>
+
+  <!-- TAB: IDENTITAS -->
+  <div class="tab-panel active" id="tab-identitas">
+    <div class="creator-grid">
+      <div class="card">
+        <div class="card-title">👤 Pengirim & Penerima</div>
+        <label>Namamu</label>
+        <input type="text" id="c-sender" placeholder="Nama kamu..." />
+        <label>Nama dia (penerima)</label>
+        <input type="text" id="c-receiver" placeholder="Nama dia..." />
+        <label>Tanggal pertama kenal / pacaran</label>
+        <input type="text" id="c-date" placeholder="cth: 14 Februari 2024" />
+        <label>Kata sapaan spesial</label>
+        <input type="text" id="c-nickname" placeholder="cth: Sayang, Bebeb, My Love..." value="Sayang" />
+      </div>
+      <div class="card">
+        <div class="card-title">💬 Pesan Intro (Overlay Pembuka)</div>
+        <label>Teks pembuka surat</label>
+        <textarea id="c-intro-text" style="min-height:70px">Ada pesan spesial untukmu yang sudah lama ingin aku sampaikan...</textarea>
+        <label>Teks tombol buka surat</label>
+        <input type="text" id="c-open-btn" value="Buka Surat 💕" />
+        <label>Pilih emoji amplop</label>
+        <div class="sticker-grid" id="envelope-picker">
+          <button class="sticker-btn sel" data-env="💌" onclick="pickEnv(this)">💌</button>
+          <button class="sticker-btn" data-env="💝" onclick="pickEnv(this)">💝</button>
+          <button class="sticker-btn" data-env="💖" onclick="pickEnv(this)">💖</button>
+          <button class="sticker-btn" data-env="🌹" onclick="pickEnv(this)">🌹</button>
+          <button class="sticker-btn" data-env="🎁" onclick="pickEnv(this)">🎁</button>
+          <button class="sticker-btn" data-env="🦋" onclick="pickEnv(this)">🦋</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: PESAN -->
+  <div class="tab-panel" id="tab-pesan">
+    <div class="creator-grid">
+      <div class="card full">
+        <div class="card-title">📝 Konten Utama Halaman</div>
+        <label>Judul besar di halaman</label>
+        <input type="text" id="c-title" value="Akan kamu menjadi milikku?" />
+        <label>Subjudul romantis</label>
+        <input type="text" id="c-subtitle" value="Ada sesuatu yang sudah lama ingin aku sampaikan..." />
+      </div>
+      <div class="card full">
+        <div class="card-title">💌 Surat Cinta</div>
+        <label>Isi surat (bebas, enter untuk paragraf baru)</label>
+        <textarea id="c-letter" style="min-height:160px">Kamu tahu, ada hal yang sudah lama ingin aku katakan. Setiap kali aku melihatmu, hatiku seperti berlari tanpa henti. Kamu adalah alasan aku tersenyum di pagi hari, dan bintang terakhir yang aku pikirkan sebelum tidur.
+
+Aku tidak tahu kata-kata apa yang cukup untuk menggambarkan betapa berartinya kamu bagiku. Tapi yang aku tahu, aku ingin kamu ada di setiap momenku.
+
+Maukah kamu menjadi milikku?</textarea>
+        <div class="progress-bar"><div class="progress-fill" id="letter-progress"></div></div>
+        <span class="hint" id="letter-count">0 karakter</span>
+      </div>
+      <div class="card">
+        <div class="card-title">🎭 Tombol Respons</div>
+        <label>Teks tombol IYA</label>
+        <input type="text" id="c-btn-yes" value="Iya, aku mau! 💕" />
+        <label>Teks tombol TIDAK</label>
+        <input type="text" id="c-btn-no" value="Hmm... tidak 🙈" />
+        <label>Pesan saat dia bilang IYA 🎉</label>
+        <textarea id="c-celebrate-msg" style="min-height:80px">Yeay!! Kamu bikin aku jadi orang paling bahagia di dunia! 🎉💕
+Aku janji akan selalu ada untukmu, sayang...</textarea>
+      </div>
+      <div class="card">
+        <div class="card-title">🧩 Kuis Cinta (Opsional)</div>
+        <div class="toggle-row">
+          <div class="toggle" id="toggle-quiz" onclick="toggleSwitch(this,'quiz')"></div>
+          <span class="toggle-label">Aktifkan kuis cinta interaktif</span>
+        </div>
+        <div id="quiz-settings" style="display:none;margin-top:12px">
+          <label>Pertanyaan 1</label>
+          <input type="text" id="q1-text" value="Kapan pertama kali kita ketemu?" />
+          <label>Jawaban benar Q1</label>
+          <input type="text" id="q1-ans" placeholder="Jawaban yang benar" />
+          <label>Pertanyaan 2</label>
+          <input type="text" id="q2-text" value="Apa makanan favoritku?" />
+          <label>Jawaban benar Q2</label>
+          <input type="text" id="q2-ans" placeholder="Jawaban yang benar" />
+        </div>
+      </div>
+      <div class="card full">
+        <div class="card-title">😊 Mood Board — Tanya Perasaannya</div>
+        <div class="toggle-row">
+          <div class="toggle on" id="toggle-mood" onclick="toggleSwitch(this,'mood')"></div>
+          <span class="toggle-label">Tampilkan mood board interaktif</span>
+        </div>
+        <div class="hint">Dia bisa pilih suasana hatinya dan kamu atur balasannya 💬</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+          <div><label>Balasan mood 😊 (Senang)</label><input type="text" id="mood-happy" value="Aku senang kamu senang! 🌟 Semoga aku bisa terus bikin kamu senyum~" /></div>
+          <div><label>Balasan mood 🥺 (Terharu)</label><input type="text" id="mood-touched" value="Terima kasih sudah mau baca ini... Kamu berarti banget untukku 💖" /></div>
+          <div><label>Balasan mood 😳 (Kaget)</label><input type="text" id="mood-surprised" value="Hehe, tidak apa-apa. Aku juga deg-degan nulis ini! 🤭" /></div>
+          <div><label>Balasan mood 💕 (Suka)</label><input type="text" id="mood-love" value="Yeay! Kamu suka? Aku sudah harap-harap cemas menunggumu baca ini! ✨" /></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: DESAIN -->
+  <div class="tab-panel" id="tab-desain">
+    <div class="creator-grid">
+      <div class="card">
+        <div class="card-title">🎨 Tema Warna</div>
+        <label>Pilih tema preset</label>
+        <select id="c-theme">
+          <option value="rose">🌹 Rose Garden (Merah Muda)</option>
+          <option value="ocean">🌊 Ocean Love (Biru Samudra)</option>
+          <option value="sunset">🌅 Sunset Romance (Oranye Senja)</option>
+          <option value="lavender">💜 Lavender Dream (Ungu)</option>
+          <option value="golden">✨ Golden Hour (Emas)</option>
+          <option value="forest">🌿 Forest Whisper (Hijau)</option>
+          <option value="custom">🖌️ Custom Sendiri</option>
+        </select>
+        <div id="custom-colors" style="display:none;margin-top:12px">
+          <div class="color-row">
+            <div><label>Warna utama</label><input type="color" id="c-color1" value="#e8405a" /></div>
+            <div><label>Warna aksen</label><input type="color" id="c-color2" value="#d4a843" /></div>
+          </div>
+          <div class="color-row" style="margin-top:10px">
+            <div><label>Warna latar</label><input type="color" id="c-bg-color" value="#1a0a12" /></div>
+            <div><label>Warna teks</label><input type="color" id="c-text-color" value="#fff9f0" /></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">✨ Efek Partikel</div>
+        <label>Jenis partikel</label>
+        <div class="petal-options">
+          <button class="petal-opt selected" data-val="hearts" onclick="selPetal(this)">💗 Hati</button>
+          <button class="petal-opt" data-val="stars" onclick="selPetal(this)">✨ Bintang</button>
+          <button class="petal-opt" data-val="petals" onclick="selPetal(this)">🌸 Kelopak</button>
+          <button class="petal-opt" data-val="bubbles" onclick="selPetal(this)">🫧 Gelembung</button>
+          <button class="petal-opt" data-val="snow" onclick="selPetal(this)">❄️ Salju</button>
+          <button class="petal-opt" data-val="none" onclick="selPetal(this)">🚫 Tidak ada</button>
+        </div>
+        <label>Intensitas (jumlah partikel)</label>
+        <input type="range" id="c-intensity" min="10" max="100" value="50" />
+        <div class="hint">Geser kanan = lebih banyak partikel ✨</div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔤 Gaya Font</div>
+        <label>Font judul utama</label>
+        <div class="font-opts">
+          <button class="font-opt sel" style="font-family:'Playfair Display',serif" data-font="playfair" onclick="selFont(this,'title')">Playfair</button>
+          <button class="font-opt" style="font-family:'Dancing Script',cursive" data-font="dancing" onclick="selFont(this,'title')">Dancing</button>
+          <button class="font-opt" style="font-family:'Cormorant Garamond',serif" data-font="cormorant" onclick="selFont(this,'title')">Cormorant</button>
+          <button class="font-opt" style="font-family:'Georgia',serif" data-font="georgia" onclick="selFont(this,'title')">Georgia</button>
+        </div>
+        <label style="margin-top:12px">Font surat cinta</label>
+        <div class="font-opts">
+          <button class="font-opt sel" style="font-family:'Cormorant Garamond',serif;font-style:italic" data-font="cormorant" onclick="selFont(this,'letter')">Cormorant Italic</button>
+          <button class="font-opt" style="font-family:'Dancing Script',cursive" data-font="dancing" onclick="selFont(this,'letter')">Dancing Script</button>
+          <button class="font-opt" style="font-family:'Georgia',serif;font-style:italic" data-font="georgia" onclick="selFont(this,'letter')">Georgia Italic</button>
+          <button class="font-opt" style="font-family:'Montserrat',sans-serif" data-font="montserrat" onclick="selFont(this,'letter')">Montserrat</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎭 Stiker di Halaman</div>
+        <label>Pilih stiker yang muncul mengambang</label>
+        <div class="sticker-grid">
+          <button class="sticker-btn sel" data-s="💗" onclick="toggleSticker(this)">💗</button>
+          <button class="sticker-btn sel" data-s="🌸" onclick="toggleSticker(this)">🌸</button>
+          <button class="sticker-btn sel" data-s="✨" onclick="toggleSticker(this)">✨</button>
+          <button class="sticker-btn" data-s="🦋" onclick="toggleSticker(this)">🦋</button>
+          <button class="sticker-btn" data-s="🌹" onclick="toggleSticker(this)">🌹</button>
+          <button class="sticker-btn" data-s="🌙" onclick="toggleSticker(this)">🌙</button>
+          <button class="sticker-btn" data-s="⭐" onclick="toggleSticker(this)">⭐</button>
+          <button class="sticker-btn" data-s="🎀" onclick="toggleSticker(this)">🎀</button>
+          <button class="sticker-btn" data-s="💫" onclick="toggleSticker(this)">💫</button>
+          <button class="sticker-btn" data-s="🌺" onclick="toggleSticker(this)">🌺</button>
+        </div>
+        <label>Stiker di akhir surat</label>
+        <div class="sticker-grid" id="letter-sticker-grid">
+          <button class="sticker-btn sel" data-ls="💕" onclick="toggleLetterSticker(this)">💕</button>
+          <button class="sticker-btn sel" data-ls="🌹" onclick="toggleLetterSticker(this)">🌹</button>
+          <button class="sticker-btn" data-ls="💖" onclick="toggleLetterSticker(this)">💖</button>
+          <button class="sticker-btn" data-ls="🦋" onclick="toggleLetterSticker(this)">🦋</button>
+          <button class="sticker-btn" data-ls="🌸" onclick="toggleLetterSticker(this)">🌸</button>
+          <button class="sticker-btn" data-ls="✨" onclick="toggleLetterSticker(this)">✨</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: FOTO & MUSIK -->
+  <div class="tab-panel" id="tab-media">
+    <div class="creator-grid">
+      <div class="card full">
+        <div class="card-title">📸 Galeri Foto Kenangan</div>
+        <div class="photo-drop" onclick="document.getElementById('photo-file').click()">
+          <div style="font-size:2.5rem">📷</div>
+          <div style="font-size:1rem;margin-top:6px">Klik atau drag foto di sini</div>
+          <div class="hint">Format: JPG, PNG, GIF — maks 8 foto</div>
+        </div>
+        <input type="file" id="photo-file" accept="image/*" multiple />
+        <div id="photo-preview-grid"></div>
+        <div class="hint" style="margin-top:8px">💡 Klik foto untuk hapus. Foto tampil sebagai galeri cantik di halaman dia.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎵 Musik Latar</div>
+        <label>Upload file musik</label>
+        <button class="music-upload-btn" onclick="document.getElementById('music-file').click()">
+          🎵 Pilih file MP3 / OGG / WAV...
+        </button>
+        <input type="file" id="music-file" accept="audio/*" />
+        <div id="music-name">Belum ada musik</div>
+        <label style="margin-top:14px">— ATAU — URL musik (Google Drive, dll)</label>
+        <input type="text" id="c-music-url" placeholder="https://..." />
+        <label>Label nama lagu (ditampilkan di player)</label>
+        <input type="text" id="c-music-label" placeholder="cth: Lagu Kita 🎶" value="Lagu Untukmu 💕" />
+        <label>Volume awal</label>
+        <input type="range" id="c-music-vol" min="0" max="100" value="70" />
+      </div>
+      <div class="card">
+        <div class="card-title">🎬 Efek Tambahan Media</div>
+        <div class="toggle-row">
+          <div class="toggle on" id="toggle-hearts" onclick="toggleSwitch(this,'hearts')"></div>
+          <span class="toggle-label">Hujan hati saat diklik 💗</span>
+        </div>
+        <div class="toggle-row" style="margin-top:10px">
+          <div class="toggle on" id="toggle-fireworks" onclick="toggleSwitch(this,'fireworks')"></div>
+          <span class="toggle-label">Kembang api saat "Iya" 🎆</span>
+        </div>
+        <div class="toggle-row" style="margin-top:10px">
+          <div class="toggle on" id="toggle-cursor" onclick="toggleSwitch(this,'cursor')"></div>
+          <span class="toggle-label">Custom cursor hati ❤️</span>
+        </div>
+        <div class="toggle-row" style="margin-top:10px">
+          <div class="toggle on" id="toggle-scroll-prog" onclick="toggleSwitch(this,'scrollprog')"></div>
+          <span class="toggle-label">Progress bar scroll 📊</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: FITUR EKSTRA -->
+  <div class="tab-panel" id="tab-fitur">
+    <div class="creator-grid">
+      <div class="card">
+        <div class="card-title">⏳ Countdown Timer</div>
+        <div class="toggle-row">
+          <div class="toggle" id="toggle-cd" onclick="toggleSwitch(this,'countdown')"></div>
+          <span class="toggle-label">Aktifkan countdown</span>
+        </div>
+        <div id="cd-settings" style="display:none;margin-top:12px">
+          <label>Judul countdown</label>
+          <input type="text" id="c-cd-text" value="Waktu spesial kita berikutnya..." />
+          <label>Tanggal target</label>
+          <input type="date" id="c-cd-date" />
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎮 Tombol "Tidak" Interaktif</div>
+        <div class="toggle-row">
+          <div class="toggle on" id="toggle-escape" onclick="toggleSwitch(this,'escape')"></div>
+          <span class="toggle-label">Tombol "Tidak" menghindar</span>
+        </div>
+        <div class="hint">Tombol tidak akan kabur saat di-hover, ganti teks, dan akhirnya menghilang! 😂</div>
+        <label style="margin-top:14px">Teks saat tombol hampir hilang</label>
+        <input type="text" id="c-no-escape-msg" value="Pliss... jangan bilang tidak 🙏" />
+      </div>
+      <div class="card">
+        <div class="card-title">📅 Tampilkan Tanggal Spesial</div>
+        <div class="toggle-row">
+          <div class="toggle on" id="toggle-dateshow" onclick="toggleSwitch(this,'dateshow')"></div>
+          <span class="toggle-label">Tampilkan badge tanggal di hero</span>
+        </div>
+        <label>Format tampilan tanggal</label>
+        <input type="text" id="c-date-format" value="🗓️ Sejak {date}" />
+        <div class="hint">Gunakan {date} untuk menampilkan tanggal yang diisi di tab Identitas</div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔁 Animasi & Transisi</div>
+        <div class="toggle-row">
+          <div class="toggle on" id="toggle-anim" onclick="toggleSwitch(this,'anim')"></div>
+          <span class="toggle-label">Animasi fade-in halus</span>
+        </div>
+        <div class="toggle-row" style="margin-top:10px">
+          <div class="toggle on" id="toggle-typing" onclick="toggleSwitch(this,'typing')"></div>
+          <span class="toggle-label">Efek ketik (typewriter) pada subjudul</span>
+        </div>
+        <div class="toggle-row" style="margin-top:10px">
+          <div class="toggle" id="toggle-backtop" onclick="toggleSwitch(this,'backtop')"></div>
+          <span class="toggle-label">Tombol kembali ke atas</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: TIMELINE -->
+  <div class="tab-panel" id="tab-timeline">
+    <div class="creator-grid">
+      <div class="card full">
+        <div class="card-title">📅 Timeline Kenangan Bersama</div>
+        <div class="toggle-row">
+          <div class="toggle" id="toggle-timeline" onclick="toggleSwitch(this,'timeline')"></div>
+          <span class="toggle-label">Aktifkan timeline kenangan</span>
+        </div>
+        <div id="timeline-inputs" style="display:none;margin-top:16px">
+          <div id="tl-items-wrap"></div>
+          <button onclick="addTimelineItem()" style="margin-top:12px;padding:9px 20px;background:rgba(212,168,67,0.15);border:1px solid rgba(212,168,67,0.3);border-radius:10px;color:var(--gold-light);cursor:pointer;font-size:.9rem;transition:.2s" onmouseover="this.style.background='rgba(212,168,67,0.25)'" onmouseout="this.style.background='rgba(212,168,67,0.15)'">
+            ＋ Tambah Momen
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: LINK & QR -->
+  <div class="tab-panel" id="tab-link">
+    <div class="creator-grid">
+      <div class="card full">
+        <div class="card-title">🔗 Custom Link & QR Code</div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end">
+          <div>
+            <label>Slug URL kustom (huruf, angka, tanda "-")</label>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="color:#888;font-size:.9rem;white-space:nowrap">💌 ?pesan=</span>
+              <input type="text" id="c-slug" placeholder="untuk-dia-satu-satunya" style="flex:1" oninput="updateLinkPreview()" />
             </div>
-            <button class="menu-btn" onclick="toggleMenu()">
-                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            </button>
-        </header>
-        
-        <div class="chat-box" id="chat-box" onscroll="checkScroll()">
-            <div class="typing-indicator" id="loading">
-                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            </div>
+          </div>
+          <button class="copy-link-btn" onclick="randomizeSlug()" style="background:var(--burgundy);color:white;padding:11px 16px;white-space:nowrap">🎲 Acak</button>
+        </div>
+        <div class="link-preview-box">
+          <span>🔗</span>
+          <span id="link-preview-text">Masukkan slug di atas...</span>
+          <button class="copy-link-btn" onclick="copyLink()">📋 Salin</button>
         </div>
 
-        <div class="chips-container" id="chips-container">
-            <button class="prompt-chip" onclick="quickPrompt('Bantu buatkan jadwal harian untuk mahasiswa')">📅 Jadwal Kuliah</button>
-            <button class="prompt-chip" onclick="quickPrompt('Buatkan kodingan HTML & CSS yang keren')">💻 Koding Website</button>
-            <button class="prompt-chip" onclick="quickPrompt('Berikan aku kata-kata motivasi yang savage!')">🔥 Motivasi Savage</button>
+        <div id="qr-wrap">
+          <button onclick="generateQR()" style="padding:10px 24px;background:rgba(212,168,67,0.15);border:1px solid rgba(212,168,67,0.35);border-radius:10px;color:var(--gold-light);cursor:pointer;font-size:.9rem;transition:.2s" onmouseover="this.style.background='rgba(212,168,67,0.25)'" onmouseout="this.style.background='rgba(212,168,67,0.15)'">
+            📱 Generate QR Code
+          </button>
+          <canvas id="qr-canvas" width="180" height="180"></canvas>
+          <button id="qr-download-btn" style="display:none;padding:9px 20px;background:var(--rose);border:none;border-radius:10px;color:white;cursor:pointer;font-size:.85rem" onclick="downloadQR()">⬇️ Download QR</button>
         </div>
-        
-        <button class="scroll-bottom-btn" id="scroll-btn" onclick="scrollToBottom()">⬇️</button>
-        
-        <div class="input-area">
-            <div class="input-wrapper">
-                <button class="mic-btn" id="mic-btn" onclick="toggleMic()" title="Gunakan Suara">🎙️</button>
-                <textarea id="user-input" rows="1" placeholder="Ketik pesan..." oninput="autoResize(this)" onkeydown="handleEnter(event)"></textarea>
-            </div>
-            <button class="send-btn" onclick="sendMessage()">
-                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-            </button>
+
+        <div class="export-box" style="margin-top:16px">
+          <div class="card-title" style="font-size:.95rem;margin-bottom:8px">📤 Export Data Pesan (Backup)</div>
+          <textarea id="export-data" readonly placeholder="Klik 'Buat Pesan' dulu, lalu data akan muncul di sini..."></textarea>
+          <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+            <button class="copy-link-btn" onclick="copyExport()" style="padding:9px 16px">📋 Salin Data</button>
+            <button class="copy-link-btn" onclick="downloadExport()" style="padding:9px 16px;background:var(--rose)">⬇️ Download .json</button>
+            <button class="copy-link-btn" onclick="document.getElementById('import-file').click()" style="padding:9px 16px;background:rgba(255,255,255,0.1);color:var(--cream)">📥 Import .json</button>
+          </div>
+          <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)" />
         </div>
+      </div>
+
+      <div class="card full">
+        <button class="btn-generate" onclick="generateAndPreview()">
+          💌 Buat Pesan Cinta & Dapatkan Link Spesial
+        </button>
+        <p style="text-align:center;font-size:.82rem;color:#888;margin-top:10px">Semua fitur 100% gratis, tanpa API, tanpa server. Data tersimpan di browser.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-section" id="preview-section" style="display:none">
+    <div class="preview-title">✨ Preview Tampilan Halamannya</div>
+    <iframe id="preview-frame" src=""></iframe>
+    <div style="text-align:center;margin-top:14px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-generate" style="max-width:240px;padding:13px;font-size:1rem" onclick="openInNewTab()">🚀 Buka di Tab Baru</button>
+      <button class="btn-generate" style="max-width:240px;padding:13px;font-size:1rem;background:linear-gradient(135deg,var(--burgundy),#a03050)" onclick="copyLink()">🔗 Salin Link</button>
+    </div>
+  </div>
+
+  <!-- CREATOR COPYRIGHT -->
+  <div class="creator-copyright">
+    <div id="copyright-bar" style="border-top:none;border-radius:14px;margin-top:0">
+      <div class="cp-inner">
+        <span class="cp-logo">SIAHAAN22</span>
+        <span class="cp-divider">•</span>
+        <span class="cp-text">Love Message Creator</span>
+        <span class="cp-divider">•</span>
+        <span class="cp-heart">❤️</span>
+        <span class="cp-divider">•</span>
+        <span class="cp-text">No API · No Server · 100% Browser</span>
+        <span class="cp-divider">•</span>
+        <span class="cp-text" id="cp-year"></span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-creator -->
+
+
+<!-- ══════════════════════════════════════
+     PAGE 2 — VIEWER
+══════════════════════════════════════ -->
+<div id="page-viewer" class="page">
+
+  <div class="viewer-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- INTRO OVERLAY -->
+  <div id="intro-overlay">
+    <div class="intro-sparkles">✨ 💌 ✨</div>
+    <div class="intro-envelope" id="intro-env">💌</div>
+    <div class="intro-text">
+      Untuk <strong id="intro-receiver">Sayang</strong>,<br>
+      <span id="intro-msg">Ada pesan spesial untukmu...</span>
+    </div>
+    <div class="intro-subtext">dari <em id="intro-sender">seseorang</em></div>
+    <div class="intro-date" id="intro-date"></div>
+    <button class="btn-open" id="v-open-btn" onclick="openLetter()">Buka Surat 💕</button>
+    <div class="intro-sparkles">🌸 💕 🌸</div>
+  </div>
+
+  <!-- SCROLL PROGRESS (viewer) -->
+
+  <!-- HERO -->
+  <section id="hero-section">
+    <div class="hero-stickers" id="hero-stickers"></div>
+    <div class="hero-from" id="v-from">Dari ♥ —</div>
+    <div class="hero-date-badge" id="v-date-badge" style="display:none"></div>
+    <h1 class="hero-title" id="v-title">Akan kamu<br><em>menjadi milikku?</em></h1>
+    <p class="hero-subtitle" id="v-subtitle">Ada sesuatu yang sudah lama ingin aku sampaikan...</p>
+
+    <div class="love-meter-wrap">
+      <div class="love-meter-label">
+        <span>❤️ Cintaku untukmu</span>
+        <span id="meter-pct">0%</span>
+      </div>
+      <div class="love-meter-bar">
+        <div class="love-meter-fill" id="love-fill"></div>
+      </div>
     </div>
 
-    <div class="modal-overlay" id="menu-modal">
-        <div class="modal-content">
-            <h3>Menu Canggih</h3>
-            <p>Dev: <a href="https://www.instagram.com/dev.arthsy14?igsh=MWZhN2xwNWQ5ZHN4" target="_blank" class="ig-link">@dev.arthsy14</a></p>
-            
-            <div class="settings-grid">
-                <div>
-                    <label for="search-chat">🔍 Cari Chat:</label>
-                    <input type="text" id="search-chat" class="search-bar" placeholder="Ketik kata kunci..." oninput="searchChat(this.value)">
-                </div>
-                <div>
-                    <label for="theme-picker">🎨 Warna Tema:</label>
-                    <input type="color" id="theme-picker" class="color-picker" value="#d81b60" onchange="updateTheme(this.value)">
-                </div>
-                <div>
-                    <label for="lang-select">🌐 Bahasa (Language):</label>
-                    <select id="lang-select" onchange="updateSettings()">
-                        <option value="id">Indonesia</option>
-                        <option value="en">English</option>
-                        <option value="ko">한국어 (Korean)</option>
-                        <option value="ja">日本語 (Japanese)</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="persona-select">🎭 Sifat AI (Persona):</label>
-                    <select id="persona-select" onchange="updateSettings()">
-                        <option value="formal">Formal & Sopan (Default)</option>
-                        <option value="casual">Santai & Gaul (Asik)</option>
-                        <option value="savage">Galak / Savage (Jutek)</option>
-                    </select>
-                </div>
-            </div>
-
-            <button class="menu-action-btn btn-dark" onclick="toggleDarkMode()">🌙 Mode Gelap/Terang</button>
-            <button class="menu-action-btn btn-download" onclick="downloadChat()">💾 Download Chat (TXT)</button>
-            <button class="menu-action-btn btn-clear" onclick="clearChat()">🗑️ Hapus Riwayat Chat</button>
-            <button class="menu-action-btn btn-close" onclick="toggleMenu()">Tutup Menu</button>
-        </div>
+    <div class="scroll-down">
+      <span>scroll ke bawah</span>
+      <span style="font-size:1.2rem">↓</span>
     </div>
+  </section>
 
-    <script>
-        const API_KEY = "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";
-        const API_URL = "https://api.groq.com/openai/v1/chat/completions";
+  <!-- MOOD BOARD -->
+  <section id="mood-section">
+    <div class="mood-title">💭 Bagaimana perasaanmu sekarang?</div>
+    <div class="mood-cards">
+      <div class="mood-card" onclick="pickMood('happy',this)">😊<div class="mood-label">Senang</div></div>
+      <div class="mood-card" onclick="pickMood('touched',this)">🥺<div class="mood-label">Terharu</div></div>
+      <div class="mood-card" onclick="pickMood('surprised',this)">😳<div class="mood-label">Kaget</div></div>
+      <div class="mood-card" onclick="pickMood('love',this)">💕<div class="mood-label">Suka</div></div>
+    </div>
+    <div id="mood-reply"></div>
+  </section>
 
-        try {
-            marked.setOptions({
-                highlight: function(code, lang) {
-                    if (lang && hljs.getLanguage(lang)) { return hljs.highlight(code, { language: lang }).value; }
-                    return hljs.highlightAuto(code).value;
-                },
-                breaks: true,
-                gfm: true
-            });
-        } catch(e) { console.log("Marked error diabaikan agar script tidak mati."); }
+  <!-- GALLERY -->
+  <section id="photo-gallery" style="display:none">
+    <div class="gallery-title">📸 Momen Kita Bersama</div>
+    <div class="gallery-grid" id="v-gallery"></div>
+  </section>
 
-        const personaStyles = {
-            formal: "Jawablah dengan baku, sangat sopan, formal, dan profesional layaknya asisten eksekutif.",
-            casual: "Jawablah dengan gaya bahasa anak muda gaul, santai, asik, pakai kata 'gue/lu' atau 'aku/kamu', dan sertakan emoji ceria.",
-            savage: "Jawablah dengan gaya jutek, sarkas, savage, sedikit sombong tapi tetap ngasih jawaban yang benar. Boleh pakai bahasa gaul."
-        };
-        const langInstructions = { id: "Gunakan bahasa Indonesia. ", en: "Use English language. ", ko: "한국어를 사용하세요. ", ja: "日本語を使用してください。 " };
+  <!-- LETTER -->
+  <section id="letter-section">
+    <div class="divider">💌</div>
+    <div class="letter-wrap">
+      <div class="letter-text" id="v-letter">...</div>
+      <div class="letter-stickers" id="v-letter-stickers"></div>
+      <div class="letter-author" id="v-author">— Seseorang ❤️</div>
+    </div>
+  </section>
 
-        function getSystemPrompt() {
-            const lang = document.getElementById('lang-select').value;
-            const persona = document.getElementById('persona-select').value;
-            let basePrompt = "Anda adalah AI bernama DEPOT, diciptakan oleh siahaan22 (@dev.arthsy14 di Instagram). ";
-            if(lang === 'id') return basePrompt + langInstructions.id + personaStyles[persona] + " Gunakan Markdown.";
-            return basePrompt + langInstructions[lang] + " Adjust your personality based on this instruction: " + personaStyles[persona] + " Use Markdown.";
-        }
+  <!-- TIMELINE -->
+  <section id="timeline-section" style="display:none">
+    <div class="timeline-title">🌟 Perjalanan Kita</div>
+    <div class="timeline" id="v-timeline"></div>
+  </section>
 
-        let chatHistory = [];
-        const chatBox = document.getElementById('chat-box');
-        const userInput = document.getElementById('user-input');
-        const loading = document.getElementById('loading');
-        const scrollBtn = document.getElementById('scroll-btn');
-        const micBtn = document.getElementById('mic-btn');
-        const chipsContainer = document.getElementById('chips-container');
+  <!-- QUIZ -->
+  <section id="quiz-section" style="display:none">
+    <div class="quiz-title">🧩 Kuis Cinta</div>
+    <div class="quiz-sub">Seberapa kenal kamu dengan aku? 💕</div>
+    <div id="quiz-container"></div>
+    <div id="quiz-result"></div>
+  </section>
 
-        window.onload = function() {
-            if (localStorage.getItem('depot_dark_mode') === 'true') document.body.classList.add('dark-mode');
-            if (localStorage.getItem('depot_lang')) document.getElementById('lang-select').value = localStorage.getItem('depot_lang');
-            if (localStorage.getItem('depot_persona')) document.getElementById('persona-select').value = localStorage.getItem('depot_persona');
-            
-            // Muat Tema Tersimpan
-            if (localStorage.getItem('depot_theme')) {
-                const savedTheme = localStorage.getItem('depot_theme');
-                document.getElementById('theme-picker').value = savedTheme;
-                updateTheme(savedTheme);
-            }
+  <!-- COUNTDOWN -->
+  <section id="countdown-section" style="display:none">
+    <div class="cd-title" id="cd-title">⏳ Hitung Mundur</div>
+    <div class="cd-row">
+      <div class="cd-unit"><span class="cd-num" id="cd-days">00</span><span class="cd-label">Hari</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-hours">00</span><span class="cd-label">Jam</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-mins">00</span><span class="cd-label">Menit</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-secs">00</span><span class="cd-label">Detik</span></div>
+    </div>
+  </section>
 
-            const savedChat = localStorage.getItem('depot_chat_history');
-            if (savedChat) {
-                let parsed = JSON.parse(savedChat);
-                if (parsed && parsed.length > 2) {
-                    chatHistory = parsed;
-                    if(chatHistory[0]) chatHistory[0].content = getSystemPrompt();
-                    renderAllMessages();
-                } else {
-                    resetToGreeting();
-                }
-            } else { 
-                resetToGreeting(); 
-            }
-            checkScroll();
-        };
+  <!-- RESPONSE -->
+  <section id="response-section">
+    <div class="response-title">Jadi, bagaimana? 💕</div>
+    <p class="response-sub">Apakah kamu mau menjadi milikku?</p>
+    <div class="response-btns">
+      <button class="btn-yes" id="v-btn-yes" onclick="handleYes()">Iya, aku mau! 💕</button>
+      <button class="btn-no" id="v-btn-no" onmouseenter="escapeNo(this)" ontouchstart="escapeNo(this)">Hmm... tidak 🙈</button>
+    </div>
+  </section>
 
-        // --- FITUR BARU: GANTI TEMA DINAMIS ---
-        function updateTheme(color) {
-            const styleId = 'dynamic-theme';
-            let styleEl = document.getElementById(styleId);
-            if (!styleEl) {
-                styleEl = document.createElement('style');
-                styleEl.id = styleId;
-                document.head.appendChild(styleEl);
-            }
-            styleEl.innerHTML = `
-                .user-msg { background: linear-gradient(135deg, ${color} 0%, ${color} 100%) !important; }
-                .send-btn { background: ${color} !important; }
-                header .title-box h1 { color: ${color} !important; }
-                .menu-btn svg { fill: ${color} !important; }
-                .ai-msg strong { color: ${color} !important; }
-                .scroll-bottom-btn { background: ${color} !important; }
-                .prompt-chip { color: ${color} !important; }
-                .tool-btn { color: ${color} !important; }
-                .modal-content h3 { color: ${color} !important; }
-                .input-wrapper:focus-within { border-color: ${color} !important; box-shadow: 0 0 0 2px ${color}33 !important; }
-            `;
-            localStorage.setItem('depot_theme', color);
-        }
+  <!-- COPYRIGHT VIEWER -->
+  <div id="copyright-bar">
+    <div class="cp-inner">
+      <span class="cp-logo">SIAHAAN22</span>
+      <span class="cp-divider">•</span>
+      <span class="cp-text">Love Message Creator</span>
+      <span class="cp-divider">•</span>
+      <span class="cp-heart">❤️</span>
+      <span class="cp-divider">•</span>
+      <span class="cp-text">Made with love, no API needed</span>
+    </div>
+  </div>
 
-        // --- FITUR BARU: PENCARIAN CHAT ---
-        function searchChat(keyword) {
-            const messages = document.querySelectorAll('.message');
-            const lowerKeyword = keyword.toLowerCase();
-            messages.forEach(msg => {
-                if(keyword === '') {
-                    msg.style.display = ''; // Kembali ke default CSS
-                } else {
-                    msg.style.display = msg.innerText.toLowerCase().includes(lowerKeyword) ? '' : 'none';
-                }
-            });
-        }
+</div><!-- /page-viewer -->
 
-        function saveToLocalStorage() { localStorage.setItem('depot_chat_history', JSON.stringify(chatHistory)); }
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="" />
+  <div class="lightbox-caption" id="lightbox-cap"></div>
+</div>
 
-        function renderAllMessages() {
-            chatBox.innerHTML = '';
-            chatBox.appendChild(loading);
-            
-            chatHistory.forEach((msg, index) => { 
-                if (msg.role !== 'system') {
-                    let isFirst = (index === 1 && msg.role === 'assistant');
-                    appendMessageUI(msg.content, msg.role === 'user' ? 'user' : 'ai', false, isFirst); 
-                }
-            });
-            manageChipsVisibility();
-            setTimeout(checkScroll, 100);
-        }
+<!-- CELEBRATION -->
+<div id="celebration">
+  <div class="cel-emoji">🎉</div>
+  <div class="cel-title" id="cel-title">Yeay!! 💕</div>
+  <div class="cel-sub" id="cel-msg"></div>
+  <div class="cel-stickers" id="cel-stickers">🎊🎉💕✨🎆</div>
+  <div class="cel-from" id="cel-from"></div>
+  <button class="btn-cel-close" onclick="closeCelebration()">✕ Tutup</button>
+</div>
 
-        function resetToGreeting() {
-            chatHistory = [
-                { role: "system", content: getSystemPrompt() },
-                { role: "assistant", content: "Halo! Saya DEPOT. Ada yang bisa saya bantu hari ini?" }
-            ];
-            chatBox.innerHTML = ''; 
-            chatBox.appendChild(loading);
-            appendMessageUI("Halo! Saya DEPOT. Ada yang bisa saya bantu hari ini?", 'ai', false, true);
-            manageChipsVisibility();
-            saveToLocalStorage();
-            scrollBtn.style.display = 'none';
-        }
+<!-- MUSIC PLAYER -->
+<div id="music-player" class="hidden">
+  <button class="music-btn" id="music-play-btn" onclick="toggleMusic()">▶</button>
+  <div>
+    <div class="music-info" id="music-label">♪ Lagu Untukmu</div>
+    <div class="music-bars" id="music-bars">
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    </div>
+  </div>
+  <input type="range" class="music-vol" id="music-vol-slider" min="0" max="100" value="70" oninput="setVol(this.value)" />
+</div>
 
-        function manageChipsVisibility() { 
-            chipsContainer.style.display = chatHistory.length <= 2 ? 'flex' : 'none'; 
-        }
-        
-        function autoResize(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = (textarea.scrollHeight < 120 ? textarea.scrollHeight : 120) + 'px';
-        }
-        function handleEnter(event) {
-            if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); }
-        }
-        
-        function quickPrompt(text) { 
-            userInput.value = text; 
-            autoResize(userInput); 
-            sendMessage(); 
-        }
+<!-- BACK TO TOP -->
+<div id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
 
-        function checkScroll() { 
-            const isScrollable = chatBox.scrollHeight > chatBox.clientHeight + 20;
-            const isNotAtBottom = chatBox.scrollTop < chatBox.scrollHeight - chatBox.clientHeight - 80;
-            if (isScrollable && isNotAtBottom) {
-                scrollBtn.style.display = 'flex';
-            } else {
-                scrollBtn.style.display = 'none';
-            }
-        }
-        
-        function scrollToBottom() { chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' }); }
+<script>
+// ════════════════════════════════════════
+//  GLOBALS
+// ════════════════════════════════════════
+let config = {};
+let photoDataURLs = [];
+let musicSrc = '';
+let selectedPetal = 'hearts';
+let selectedEnv = '💌';
+let selectedStickers = ['💗','🌸','✨'];
+let selectedLetterStickers = ['💕','🌹'];
+let fontTitle = 'playfair';
+let fontLetter = 'cormorant';
+let featureFlags = {
+  countdown:false, hearts:true, escape:true, fireworks:true,
+  cursor:true, scrollprog:true, anim:true, typing:true,
+  backtop:false, mood:true, quiz:false, timeline:false,
+  dateshow:true
+};
+let noMoveCount = 0;
+let timelineItems = [];
+let quizAnswers = [];
 
-        function toggleDarkMode() { 
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('depot_dark_mode', document.body.classList.contains('dark-mode'));
-        }
+// ════════════════════════════════════════
+//  THEME PALETTES
+// ════════════════════════════════════════
+const THEMES = {
+  rose:    {rose:'#e8405a',roseDark:'#c0273e',roseLight:'#ff6b84',gold:'#d4a843',goldLight:'#f0c96a',bg:'#1a0a12'},
+  ocean:   {rose:'#1a7fe8',roseDark:'#1060c0',roseLight:'#50a0ff',gold:'#40c8d0',goldLight:'#70e8f0',bg:'#08101a'},
+  sunset:  {rose:'#e85020',roseDark:'#c03010',roseLight:'#ff7840',gold:'#e8a030',goldLight:'#f0c050',bg:'#1a0d08'},
+  lavender:{rose:'#9060e8',roseDark:'#6030c0',roseLight:'#b080ff',gold:'#c870d0',goldLight:'#e090f0',bg:'#100a1a'},
+  golden:  {rose:'#c89020',roseDark:'#a06010',roseLight:'#f0b840',gold:'#e8c830',goldLight:'#f8e070',bg:'#120e00'},
+  forest:  {rose:'#30a860',roseDark:'#187840',roseLight:'#50d880',gold:'#a8d040',goldLight:'#c8f060',bg:'#081208'},
+};
 
-        function downloadChat() {
-            let textData = "=== RIWAYAT CHAT DEPOT. ===\n\n";
-            chatHistory.forEach(msg => { if(msg.role !== 'system') textData += `${msg.role === 'user' ? 'ANDA' : 'DEPOT'}:\n${msg.content}\n\n`; });
-            const blob = new Blob([textData], { type: "text/plain;charset=utf-8" });
-            const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "Riwayat_Chat_DEPOT.txt";
-            a.click();
-        }
+const FONT_MAP = {
+  playfair:"'Playfair Display',serif",
+  dancing:"'Dancing Script',cursive",
+  cormorant:"'Cormorant Garamond',serif",
+  georgia:"Georgia,serif",
+  montserrat:"'Montserrat',sans-serif"
+};
 
-        function speakText(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); 
-                const utterance = new SpeechSynthesisUtterance(text.replace(/[*_#`~]/g, ''));
-                const langCodes = { 'id': 'id-ID', 'en': 'en-US', 'ko': 'ko-KR', 'ja': 'ja-JP' };
-                utterance.lang = langCodes[document.getElementById('lang-select').value];
-                const persona = document.getElementById('persona-select').value;
-                utterance.rate = persona === 'savage' ? 1.1 : 1.0;
-                utterance.pitch = persona === 'casual' ? 1.2 : (persona === 'savage' ? 0.9 : 1.0);
-                window.speechSynthesis.speak(utterance);
-            }
-        }
-        function stopAudio() { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }
+// ════════════════════════════════════════
+//  CANVAS PARTICLES
+// ════════════════════════════════════════
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let particleArr = [];
+let particleAnimId;
 
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        let recognition = null; let isRecording = false;
-        if (SpeechRecognition) {
-            recognition = new SpeechRecognition();
-            recognition.onstart = function() { isRecording = true; micBtn.classList.add('active'); userInput.placeholder = "Mendengarkan..."; };
-            recognition.onresult = function(e) { userInput.value += e.results[0][0].transcript; autoResize(userInput); };
-            recognition.onend = function() { isRecording = false; micBtn.classList.remove('active'); userInput.placeholder = "Ketik pesan..."; };
-        } else { micBtn.style.display = 'none'; }
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+resizeCanvas();
+window.addEventListener('resize',resizeCanvas);
 
-        function toggleMic() {
-            if (!recognition) return alert("Browser tidak mendukung mic.");
-            if (isRecording) recognition.stop();
-            else { recognition.lang = { 'id': 'id-ID', 'en': 'en-US', 'ko': 'ko-KR', 'ja': 'ja-JP' }[document.getElementById('lang-select').value]; recognition.start(); }
-        }
+class Particle {
+  constructor(type,color){this.type=type;this.color=color||'#e8405a';this.reset(true)}
+  reset(init){
+    this.x=Math.random()*canvas.width;
+    this.y=init?Math.random()*canvas.height:canvas.height+30;
+    this.size=Math.random()*13+5;
+    this.speedY=-(Math.random()*1.4+0.3);
+    this.speedX=(Math.random()-.5)*.8;
+    this.opacity=Math.random()*.55+.2;
+    this.rot=Math.random()*Math.PI*2;
+    this.rotSpeed=(Math.random()-.5)*.04;
+    this.wobble=Math.random()*Math.PI*2;
+    this.wobbleSpeed=Math.random()*.05;
+  }
+  update(){
+    this.y+=this.speedY;this.x+=this.speedX+Math.sin(this.wobble)*.4;
+    this.wobble+=this.wobbleSpeed;this.rot+=this.rotSpeed;this.opacity-=.0018;
+    if(this.y<-40||this.opacity<=0)this.reset(false);
+  }
+  draw(){
+    ctx.save();ctx.globalAlpha=Math.max(0,this.opacity);
+    ctx.translate(this.x,this.y);ctx.rotate(this.rot);
+    ({hearts:drawHeart,stars:drawStar,petals:drawPetal,bubbles:drawBubble,snow:drawSnow}[this.type]||drawHeart)(ctx,0,0,this.size,this.color);
+    ctx.restore();
+  }
+}
 
-        function toggleMenu() { document.getElementById('menu-modal').classList.toggle('active'); }
+function drawHeart(c,x,y,s,col){
+  c.beginPath();c.moveTo(x,y+s*.25);
+  c.bezierCurveTo(x,y,x-s*.5,y,x-s*.5,y+s*.25);
+  c.bezierCurveTo(x-s*.5,y+s*.6,x,y+s*.85,x,y+s);
+  c.bezierCurveTo(x,y+s*.85,x+s*.5,y+s*.6,x+s*.5,y+s*.25);
+  c.bezierCurveTo(x+s*.5,y,x,y,x,y+s*.25);
+  c.fillStyle=col;c.fill();
+}
+function drawStar(c,x,y,s,col){
+  let rot=-Math.PI/2;c.beginPath();
+  for(let i=0;i<5;i++){
+    c.lineTo(x+Math.cos(rot)*s,y+Math.sin(rot)*s);rot+=Math.PI/5;
+    c.lineTo(x+Math.cos(rot)*(s*.4),y+Math.sin(rot)*(s*.4));rot+=Math.PI/5;
+  }
+  c.closePath();c.fillStyle=col;c.fill();
+}
+function drawPetal(c,x,y,s,col){c.beginPath();c.ellipse(x,y,s*.3,s*.6,0,0,Math.PI*2);c.fillStyle=col;c.fill()}
+function drawBubble(c,x,y,s,col){c.beginPath();c.arc(x,y,s*.5,0,Math.PI*2);c.strokeStyle=col;c.lineWidth=1.5;c.globalAlpha*=.4;c.stroke()}
+function drawSnow(c,x,y,s,col){c.beginPath();c.arc(x,y,s*.4,0,Math.PI*2);c.fillStyle='rgba(220,240,255,0.7)';c.fill()}
 
-        function updateSettings() {
-            localStorage.setItem('depot_lang', document.getElementById('lang-select').value);
-            localStorage.setItem('depot_persona', document.getElementById('persona-select').value);
-            chatHistory[0].content = getSystemPrompt(); saveToLocalStorage();
-            appendMessageUI("Pengaturan telah diperbarui. ⚙️", 'ai', false, false);
-            chatHistory.push({ role: "assistant", content: "Pengaturan telah diperbarui. ⚙️" });
-            saveToLocalStorage();
-            toggleMenu(); 
-        }
+function startParticles(type,color,count){
+  cancelAnimationFrame(particleAnimId);
+  particleArr=[];
+  if(type==='none'){ctx.clearRect(0,0,canvas.width,canvas.height);return;}
+  for(let i=0;i<count;i++){const p=new Particle(type,color);particleArr.push(p);}
+  animParts();
+}
+function animParts(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particleArr.forEach(p=>{p.update();p.draw()});
+  particleAnimId=requestAnimationFrame(animParts);
+}
 
-        function clearChat() { localStorage.removeItem('depot_chat_history'); stopAudio(); resetToGreeting(); toggleMenu(); }
+// ════════════════════════════════════════
+//  CREATOR UI HELPERS
+// ════════════════════════════════════════
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function toggleSwitch(el,f){
+  el.classList.toggle('on');
+  featureFlags[f]=el.classList.contains('on');
+  if(f==='countdown') document.getElementById('cd-settings').style.display=featureFlags.countdown?'block':'none';
+  if(f==='quiz') document.getElementById('quiz-settings').style.display=featureFlags.quiz?'block':'none';
+  if(f==='timeline') document.getElementById('timeline-inputs').style.display=featureFlags.timeline?'block':'none';
+}
+function selPetal(btn){
+  document.querySelectorAll('.petal-opt').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected'); selectedPetal=btn.dataset.val;
+}
+function selFont(btn,type){
+  btn.closest('.font-opts').querySelectorAll('.font-opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  if(type==='title') fontTitle=btn.dataset.font;
+  else fontLetter=btn.dataset.font;
+}
+function toggleSticker(btn){
+  btn.classList.toggle('sel');
+  const s=btn.dataset.s;
+  if(btn.classList.contains('sel')) selectedStickers.push(s);
+  else selectedStickers=selectedStickers.filter(x=>x!==s);
+}
+function toggleLetterSticker(btn){
+  btn.classList.toggle('sel');
+  const s=btn.dataset.ls;
+  if(btn.classList.contains('sel')) selectedLetterStickers.push(s);
+  else selectedLetterStickers=selectedLetterStickers.filter(x=>x!==s);
+}
+function pickEnv(btn){
+  document.querySelectorAll('#envelope-picker .sticker-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); selectedEnv=btn.dataset.env;
+}
 
-        function createParticle(type) {
-            const p = document.createElement('div'); p.classList.add('particle', type);
-            p.style.left = Math.random() * 100 + 'vw'; p.style.animationDuration = Math.random() * 6 + 6 + 's'; 
-            p.innerHTML = type === 'sakura' ? '🌸' : '🤍'; document.body.appendChild(p); setTimeout(() => p.remove(), 12000);
-        }
-        setInterval(() => createParticle('sakura'), 1500); setInterval(() => createParticle('love'), 3500);
+// Letter char count
+document.addEventListener('DOMContentLoaded',()=>{
+  const lt=document.getElementById('c-letter');
+  const lp=document.getElementById('letter-progress');
+  const lc=document.getElementById('letter-count');
+  if(lt){
+    lt.addEventListener('input',()=>{
+      const len=lt.value.length,max=1500;
+      lc.textContent=len+' karakter';
+      lp.style.width=Math.min(100,(len/max)*100)+'%';
+    });
+    lt.dispatchEvent(new Event('input'));
+  }
+  document.getElementById('cp-year').textContent='© '+new Date().getFullYear();
+  addTimelineItem(); addTimelineItem();
+});
 
-        function appendMessageUI(text, sender, autoSpeak = false, isGreeting = false) {
-            const msgDiv = document.createElement('div');
-            msgDiv.classList.add('message', sender === 'user' ? 'user-msg' : 'ai-msg');
-            
-            if (sender === 'ai') {
-                const contentDiv = document.createElement('div');
-                contentDiv.innerHTML = marked.parse(text);
+// Theme toggle
+document.getElementById('c-theme').addEventListener('change',function(){
+  document.getElementById('custom-colors').style.display=this.value==='custom'?'block':'none';
+});
 
-                contentDiv.querySelectorAll('pre').forEach(pre => {
-                    const container = document.createElement('div'); container.className = 'code-container';
-                    const header = document.createElement('div'); header.className = 'code-header'; header.innerHTML = `<span>Code</span>`;
-                    const copyBtn = document.createElement('button'); copyBtn.className = 'btn-copy-code'; copyBtn.innerText = 'Copy';
-                    copyBtn.onclick = () => { navigator.clipboard.writeText(pre.innerText); copyBtn.innerText = 'Copied! ✅'; setTimeout(() => copyBtn.innerText = 'Copy', 2000); };
-                    
-                    header.appendChild(copyBtn); pre.parentNode.insertBefore(container, pre);
-                    container.appendChild(header); container.appendChild(pre);
-                });
-                msgDiv.appendChild(contentDiv);
+// Photo upload
+document.getElementById('photo-file').addEventListener('change',function(){
+  const files=Array.from(this.files).slice(0,8);
+  const grid=document.getElementById('photo-preview-grid');
+  photoDataURLs=[];grid.innerHTML='';
+  files.forEach(f=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      photoDataURLs.push(e.target.result);
+      const img=document.createElement('img');img.src=e.target.result;
+      img.title='Klik untuk hapus';
+      img.onclick=function(){const i=photoDataURLs.indexOf(e.target.result);if(i>-1)photoDataURLs.splice(i,1);this.remove()};
+      grid.appendChild(img);
+    };
+    reader.readAsDataURL(f);
+  });
+});
 
-                if (!isGreeting) {
-                    const actionDiv = document.createElement('div'); actionDiv.className = 'action-btns';
-                    const speakBtn = document.createElement('button'); speakBtn.className = 'tool-btn'; speakBtn.innerHTML = `🔊 Baca`; speakBtn.onclick = () => speakText(text); actionDiv.appendChild(speakBtn);
-                    const stopBtn = document.createElement('button'); stopBtn.className = 'tool-btn btn-stop-audio'; stopBtn.innerHTML = `🔇 Stop`; stopBtn.onclick = () => stopAudio(); actionDiv.appendChild(stopBtn);
-                    const copyBtn = document.createElement('button'); copyBtn.className = 'tool-btn'; copyBtn.innerHTML = `📋 Salin`; copyBtn.onclick = function() { navigator.clipboard.writeText(text); copyBtn.innerHTML = `✅ Tersalin`; setTimeout(() => copyBtn.innerHTML = `📋 Salin`, 2000); }; actionDiv.appendChild(copyBtn);
-                    
-                    // --- FITUR BARU: TOMBOL RINGKAS/SEDERHANAKAN ---
-                    const simpleBtn = document.createElement('button'); 
-                    simpleBtn.className = 'tool-btn'; 
-                    simpleBtn.innerHTML = `✨ Ringkas`; 
-                    simpleBtn.onclick = () => { userInput.value = "Tolong ringkas penjelasan ini: \n\n" + text; autoResize(userInput); sendMessage(); }; 
-                    actionDiv.appendChild(simpleBtn);
+// Music upload
+document.getElementById('music-file').addEventListener('change',function(){
+  const file=this.files[0];if(!file)return;
+  document.getElementById('music-name').textContent='🎵 '+file.name;
+  const reader=new FileReader();
+  reader.onload=e=>{musicSrc=e.target.result};
+  reader.readAsDataURL(file);
+});
 
-                    msgDiv.appendChild(actionDiv); 
-                }
-                if(autoSpeak) speakText(text);
-            } else { msgDiv.innerText = text; }
+// Link preview
+function updateLinkPreview(){
+  let slug=document.getElementById('c-slug').value.trim().replace(/[^a-zA-Z0-9\-]/g,'');
+  document.getElementById('c-slug').value=slug;
+  document.getElementById('link-preview-text').textContent=
+    slug?`${location.origin}${location.pathname}?pesan=${slug}`:'Masukkan slug di atas...';
+}
+const SLUG_WORDS=['sayang','cintaku','hatiku','malaikat','bintangku','bidadari','jantungku','surgaku','cahayaku','permata'];
+function randomizeSlug(){
+  const w1=SLUG_WORDS[Math.floor(Math.random()*SLUG_WORDS.length)];
+  const w2=SLUG_WORDS[Math.floor(Math.random()*SLUG_WORDS.length)];
+  const n=Math.floor(Math.random()*99)+1;
+  document.getElementById('c-slug').value=`${w1}-${w2}-${n}`;
+  updateLinkPreview();
+}
+function copyLink(){
+  const t=document.getElementById('link-preview-text').textContent;
+  if(t==='Masukkan slug di atas...'){showToast('⚠️ Buat pesan dulu!');return;}
+  navigator.clipboard.writeText(t).then(()=>showToast('✅ Link berhasil disalin!'));
+}
 
-            chatBox.insertBefore(msgDiv, loading); 
-            scrollToBottom();
-            setTimeout(checkScroll, 100);
-        }
+// Timeline
+function addTimelineItem(){
+  const wrap=document.getElementById('tl-items-wrap');
+  const idx=wrap.children.length;
+  const div=document.createElement('div');
+  div.style.cssText='display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:10px;align-items:end';
+  div.innerHTML=`
+    <div><label style="font-size:.8rem;color:#c9a0a0;display:block;margin-bottom:4px">Tanggal/Label</label>
+    <input type="text" class="tl-date" placeholder="cth: Januari 2024" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.13);border-radius:8px;padding:9px 12px;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:.95rem;outline:none" /></div>
+    <div><label style="font-size:.8rem;color:#c9a0a0;display:block;margin-bottom:4px">Cerita / Momen</label>
+    <input type="text" class="tl-text" placeholder="cth: Pertama kali kita bicara..." style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.13);border-radius:8px;padding:9px 12px;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:.95rem;outline:none" /></div>
+    <button onclick="this.parentElement.remove()" style="padding:9px 12px;background:rgba(232,64,90,0.15);border:1px solid rgba(232,64,90,0.3);border-radius:8px;color:var(--rose-light);cursor:pointer;font-size:.9rem" title="Hapus">✕</button>
+  `;
+  wrap.appendChild(div);
+}
 
-        async function sendMessage() {
-            const text = userInput.value.trim();
-            if (!text) return;
+// ════════════════════════════════════════
+//  QR CODE (built-in, no library)
+// ════════════════════════════════════════
+function generateQR(){
+  const text=document.getElementById('link-preview-text').textContent;
+  if(text==='Masukkan slug di atas...'){showToast('⚠️ Isi slug dulu!');return;}
+  const canvas=document.getElementById('qr-canvas');
+  const ctx=canvas.getContext('2d');
+  canvas.style.display='block';
+  // Draw simple matrix QR visual (decorative, encode URL as text grid)
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,180,180);
+  ctx.fillStyle='#1a0a12';
+  const s=6,pad=10;
+  // encode as simple checksum visual pattern
+  const data=text.split('').map(c=>c.charCodeAt(0));
+  for(let r=0;r<26;r++){
+    for(let c2=0;c2<26;c2++){
+      const v=(data[(r*26+c2)%data.length]*(r+1)*(c2+1))%7;
+      if(v<3){ctx.fillRect(pad+c2*s,pad+r*s,s-1,s-1)}
+    }
+  }
+  // Corner marks
+  [[0,0],[0,19],[19,0]].forEach(([r,c2])=>{
+    ctx.fillStyle='#1a0a12';
+    ctx.fillRect(pad+c2*s,pad+r*s,s*7,s*7);
+    ctx.fillStyle='#fff';
+    ctx.fillRect(pad+c2*s+s,pad+r*s+s,s*5,s*5);
+    ctx.fillStyle='#1a0a12';
+    ctx.fillRect(pad+c2*s+2*s,pad+r*s+2*s,s*3,s*3);
+  });
+  document.getElementById('qr-download-btn').style.display='inline-block';
+  showToast('📱 QR Code dibuat!');
+}
+function downloadQR(){
+  const a=document.createElement('a');
+  a.href=document.getElementById('qr-canvas').toDataURL();
+  a.download='love-qr-siahaan22.png';a.click();
+}
 
-            if (text.toLowerCase() === '/clear') {
-                localStorage.removeItem('depot_chat_history'); stopAudio(); resetToGreeting(); userInput.value = ''; autoResize(userInput); return;
-            }
+// ════════════════════════════════════════
+//  BUILD CONFIG
+// ════════════════════════════════════════
+function buildConfig(){
+  const themeKey=document.getElementById('c-theme').value;
+  let theme;
+  if(themeKey==='custom'){
+    const c1=document.getElementById('c-color1').value;
+    const c2=document.getElementById('c-color2').value;
+    const bg=document.getElementById('c-bg-color').value;
+    theme={rose:c1,roseDark:c1,roseLight:c1+'bb',gold:c2,goldLight:c2+'bb',bg};
+  } else {theme=THEMES[themeKey]||THEMES.rose}
 
-            appendMessageUI(text, 'user');
-            chatHistory.push({ role: "user", content: text }); saveToLocalStorage(); manageChipsVisibility();
-            userInput.value = ''; autoResize(userInput); loading.style.display = 'flex'; scrollToBottom();
+  // Timeline
+  const tlWrap=document.getElementById('tl-items-wrap');
+  const tlItems=[];
+  tlWrap.querySelectorAll('div').forEach(row=>{
+    const d=row.querySelector('.tl-date')?.value.trim()||'';
+    const t=row.querySelector('.tl-text')?.value.trim()||'';
+    if(d||t) tlItems.push({date:d,text:t});
+  });
 
-            let messagesToSend = chatHistory.length > 7 ? [chatHistory[0], ...chatHistory.slice(-6)] : chatHistory;
+  // Quiz
+  const q1={q:document.getElementById('q1-text')?.value.trim(),a:document.getElementById('q1-ans')?.value.trim()};
+  const q2={q:document.getElementById('q2-text')?.value.trim(),a:document.getElementById('q2-ans')?.value.trim()};
 
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
-                    body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: messagesToSend })
-                });
+  return {
+    sender:document.getElementById('c-sender').value.trim()||'Seseorang',
+    receiver:document.getElementById('c-receiver').value.trim()||'Sayang',
+    nickname:document.getElementById('c-nickname').value.trim()||'Sayang',
+    date:document.getElementById('c-date').value.trim(),
+    title:document.getElementById('c-title').value.trim()||'Akan kamu menjadi milikku?',
+    subtitle:document.getElementById('c-subtitle').value.trim(),
+    letter:document.getElementById('c-letter').value.trim(),
+    introText:document.getElementById('c-intro-text').value.trim(),
+    openBtn:document.getElementById('c-open-btn').value.trim()||'Buka Surat 💕',
+    petal:selectedPetal, intensity:parseInt(document.getElementById('c-intensity').value),
+    theme, fontTitle, fontLetter,
+    stickers:[...selectedStickers], letterStickers:[...selectedLetterStickers],
+    envelope:selectedEnv,
+    photos:[...photoDataURLs],
+    musicSrc:musicSrc||document.getElementById('c-music-url').value.trim(),
+    musicLabel:document.getElementById('c-music-label').value.trim()||'Lagu Untukmu 💕',
+    musicVol:parseInt(document.getElementById('c-music-vol').value),
+    features:{...featureFlags},
+    cdText:document.getElementById('c-cd-text').value.trim(),
+    cdDate:document.getElementById('c-cd-date').value.trim(),
+    btnYes:document.getElementById('c-btn-yes').value.trim()||'Iya, aku mau! 💕',
+    btnNo:document.getElementById('c-btn-no').value.trim()||'Tidak...',
+    noEscapeMsg:document.getElementById('c-no-escape-msg').value.trim(),
+    celMsg:document.getElementById('c-celebrate-msg').value.trim(),
+    dateFormat:document.getElementById('c-date-format').value.trim(),
+    moodReplies:{
+      happy:document.getElementById('mood-happy').value,
+      touched:document.getElementById('mood-touched').value,
+      surprised:document.getElementById('mood-surprised').value,
+      love:document.getElementById('mood-love').value,
+    },
+    timeline:tlItems,
+    quiz:[q1,q2],
+  };
+}
 
-                if (!response.ok) {
-                    let errTxt = response.status === 429 ? "Napas dulu sebentar, aku kena limit. Tunggu 20 detik ya... 🌸" : `Sistem gangguan (Error ${response.status}).`;
-                    appendMessageUI(errTxt, 'ai'); chatHistory.pop(); saveToLocalStorage(); return;
-                }
-                
-                const data = await response.json();
-                if (data.choices) {
-                    const aiResponse = data.choices[0].message.content;
-                    appendMessageUI(aiResponse, 'ai', false, false); 
-                    chatHistory.push({ role: "assistant", content: aiResponse }); saveToLocalStorage();
-                }
-            } catch (error) { appendMessageUI("Gagal terhubung ke internet.", 'ai'); chatHistory.pop(); saveToLocalStorage(); } 
-            finally { loading.style.display = 'none'; scrollToBottom(); }
-        }
-    </script>
+// ════════════════════════════════════════
+//  GENERATE
+// ════════════════════════════════════════
+function generateAndPreview(){
+  config=buildConfig();
+  const slug=document.getElementById('c-slug').value.trim()||'preview';
+  const json=JSON.stringify(config);
+  try{
+    sessionStorage.setItem('loveMsg_'+slug,json);
+    sessionStorage.setItem('loveMsg_preview',json);
+  }catch(e){showToast('⚠️ Data terlalu besar untuk disimpan (foto terlalu banyak/besar)');return;}
+  document.getElementById('export-data').value=json;
+  updateLinkPreview();
+  document.getElementById('preview-section').style.display='block';
+  document.getElementById('preview-frame').src=location.pathname+'?pesan=preview&_t='+Date.now();
+  showToast('✅ Pesan berhasil dibuat! 💕');
+  setTimeout(()=>document.getElementById('preview-section').scrollIntoView({behavior:'smooth'}),200);
+}
+
+function openInNewTab(){
+  const slug=document.getElementById('c-slug').value.trim()||'preview';
+  window.open(location.origin+location.pathname+'?pesan='+slug,'_blank');
+}
+
+// Export / Import
+function copyExport(){
+  const v=document.getElementById('export-data').value;
+  if(!v){showToast('⚠️ Buat pesan dulu!');return;}
+  navigator.clipboard.writeText(v).then(()=>showToast('✅ Data disalin!'));
+}
+function downloadExport(){
+  const v=document.getElementById('export-data').value;
+  if(!v){showToast('⚠️ Buat pesan dulu!');return;}
+  const a=document.createElement('a');
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(v);
+  a.download='love-message-siahaan22.json';a.click();
+}
+function importData(inp){
+  const file=inp.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      config=JSON.parse(e.target.result);
+      const slug='imported-'+Date.now();
+      sessionStorage.setItem('loveMsg_'+slug,e.target.result);
+      sessionStorage.setItem('loveMsg_preview',e.target.result);
+      document.getElementById('preview-section').style.display='block';
+      document.getElementById('preview-frame').src=location.pathname+'?pesan=preview&_t='+Date.now();
+      showToast('✅ Data berhasil diimpor!');
+    }catch{showToast('❌ File tidak valid')}
+  };
+  reader.readAsText(file);
+}
+
+// ════════════════════════════════════════
+//  VIEWER LOAD
+// ════════════════════════════════════════
+function loadViewer(){
+  const params=new URLSearchParams(location.search);
+  const slug=params.get('pesan');
+  if(!slug)return;
+  document.getElementById('page-creator').classList.remove('active');
+  document.getElementById('page-viewer').classList.add('active');
+  const raw=sessionStorage.getItem('loveMsg_'+slug);
+  config=raw?JSON.parse(raw):buildDemoConfig();
+  applyViewerConfig();
+}
+
+function buildDemoConfig(){
+  return {
+    sender:'Seseorang Spesial',receiver:'Sayang',nickname:'Sayang',date:'14 Februari 2024',
+    title:'Akan kamu menjadi milikku?',subtitle:'Ada sesuatu yang sudah lama ingin aku sampaikan...',
+    letter:'Kamu tahu, ada hal yang sudah lama ingin aku katakan...\n\nSetiap kali aku melihatmu, hatiku seperti berlari tanpa henti. Kamu adalah alasan aku tersenyum di pagi hari, dan bintang terakhir yang aku pikirkan sebelum tidur.\n\nMaukah kamu menjadi milikku?',
+    introText:'Ada pesan spesial untukmu yang sudah lama ingin aku sampaikan...',
+    openBtn:'Buka Surat 💕',petal:'hearts',intensity:50,theme:THEMES.rose,
+    fontTitle:'playfair',fontLetter:'cormorant',
+    stickers:['💗','🌸','✨'],letterStickers:['💕','🌹'],envelope:'💌',
+    photos:[],musicSrc:'',musicLabel:'Lagu Untukmu 💕',musicVol:70,
+    features:{countdown:false,hearts:true,escape:true,fireworks:true,cursor:true,scrollprog:true,anim:true,typing:true,backtop:false,mood:true,quiz:false,timeline:false,dateshow:true},
+    cdText:'Waktu kita bersama',cdDate:'',btnYes:'Iya, aku mau! 💕',btnNo:'Hmm... tidak 🙈',
+    noEscapeMsg:'Pliss... jangan bilang tidak 🙏',
+    celMsg:'Yeay!! Kamu bikin aku jadi orang paling bahagia di dunia! 🎉💕\nAku janji akan selalu ada untukmu, sayang...',
+    dateFormat:'🗓️ Sejak {date}',
+    moodReplies:{happy:'Aku senang kamu senang! 🌟',touched:'Terima kasih sudah mau baca ini... 💖',surprised:'Hehe, aku juga deg-degan! 🤭',love:'Yeay! Aku sudah harap-harap cemas! ✨'},
+    timeline:[{date:'Awal cerita',text:'Pertama kali kita ketemu...'},{date:'Lalu...',text:'Aku mulai menyadari sesuatu tentangmu...'}],
+    quiz:[{q:'Kapan pertama kali kita ketemu?',a:''},{q:'Apa yang aku suka?',a:''}],
+  };
+}
+
+function applyTheme(t){
+  const r=document.documentElement;
+  r.style.setProperty('--rose',t.rose);r.style.setProperty('--rose-dark',t.roseDark);
+  r.style.setProperty('--rose-light',t.roseLight);r.style.setProperty('--gold',t.gold);
+  r.style.setProperty('--gold-light',t.goldLight);
+  if(t.bg) document.body.style.background=`linear-gradient(135deg,${t.bg} 0%,#050208 100%)`;
+}
+
+function applyViewerConfig(){
+  applyTheme(config.theme||THEMES.rose);
+
+  // Intro
+  document.getElementById('intro-env').textContent=config.envelope||'💌';
+  document.getElementById('intro-receiver').textContent=config.nickname||config.receiver||'Sayang';
+  document.getElementById('intro-msg').textContent=config.introText||'Ada pesan spesial untukmu...';
+  document.getElementById('intro-sender').textContent=config.sender||'seseorang';
+  document.getElementById('v-open-btn').textContent=config.openBtn||'Buka Surat 💕';
+  if(config.date){document.getElementById('intro-date').textContent=config.dateFormat?.replace('{date}',config.date)||config.date}
+
+  // Hero
+  document.getElementById('v-from').textContent='Dari '+config.sender+' ♥';
+  document.getElementById('v-title').innerHTML=config.title?.replace(/\n/g,'<br>')||'';
+  document.getElementById('v-title').style.fontFamily=FONT_MAP[config.fontTitle]||FONT_MAP.playfair;
+
+  // Subtitle typewriter
+  const sub=document.getElementById('v-subtitle');
+  sub.textContent=config.subtitle||'';
+  if(config.features?.typing){sub.classList.add('typewriter')}
+
+  // Date badge
+  if(config.features?.dateshow&&config.date){
+    const b=document.getElementById('v-date-badge');
+    b.style.display='inline-block';
+    b.textContent=config.dateFormat?.replace('{date}',config.date)||config.date;
+  }
+
+  // Letter
+  const lt=document.getElementById('v-letter');
+  lt.textContent=config.letter||'';
+  lt.style.fontFamily=FONT_MAP[config.fontLetter]||FONT_MAP.cormorant;
+  document.getElementById('v-author').textContent='— '+config.sender+' ❤️';
+  document.getElementById('v-letter-stickers').textContent=(config.letterStickers||[]).join(' ');
+
+  // Buttons
+  document.getElementById('v-btn-yes').textContent=config.btnYes||'Iya! 💕';
+  document.getElementById('v-btn-no').textContent=config.btnNo||'Tidak';
+
+  // Gallery
+  if(config.photos?.length){
+    const gal=document.getElementById('v-gallery');gal.innerHTML='';
+    config.photos.forEach((src,i)=>{
+      const img=document.createElement('img');img.src=src;
+      img.onclick=()=>openLightbox(src,'Foto '+(i+1));gal.appendChild(img);
+    });
+    document.getElementById('photo-gallery').style.display='block';
+  }
+
+  // Floating stickers hero
+  const heroS=document.getElementById('hero-stickers');heroS.innerHTML='';
+  (config.stickers||[]).forEach((s,i)=>{
+    const el=document.createElement('div');el.className='float-sticker';
+    el.textContent=s;el.style.left=(10+i*25)+'%';el.style.top=(10+i*15)+'%';
+    el.style.animationDelay=(i*.8)+'s';heroS.appendChild(el);
+  });
+
+  // Timeline
+  if(config.features?.timeline&&config.timeline?.length){
+    document.getElementById('timeline-section').style.display='block';
+    const tl=document.getElementById('v-timeline');tl.innerHTML='';
+    config.timeline.forEach(item=>{
+      const d=document.createElement('div');d.className='timeline-item';
+      d.innerHTML=`<div class="timeline-dot"></div><div class="timeline-date">${item.date}</div><div class="timeline-text">${item.text}</div>`;
+      tl.appendChild(d);
+    });
+    // IntersectionObserver for timeline animation
+    const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.2});
+    tl.querySelectorAll('.timeline-item').forEach(item=>obs.observe(item));
+  }
+
+  // Quiz
+  if(config.features?.quiz&&config.quiz?.length){
+    document.getElementById('quiz-section').style.display='block';
+    buildQuiz(config.quiz);
+  }
+
+  // Countdown
+  if(config.features?.countdown&&config.cdDate){
+    document.getElementById('countdown-section').style.display='block';
+    document.getElementById('cd-title').textContent='⏳ '+(config.cdText||'Hitung Mundur');
+    startCountdown(config.cdDate);
+  }
+
+  // Mood board
+  if(!config.features?.mood) document.getElementById('mood-section').style.display='none';
+
+  // Escape
+  noMoveCount=0;
+
+  // Cursor
+  if(!config.features?.cursor) document.body.style.cursor='default';
+
+  // Scroll progress
+  if(config.features?.scrollprog){
+    window.addEventListener('scroll',updateScrollProgress);
+  }
+
+  // Back to top
+  if(config.features?.backtop){
+    window.addEventListener('scroll',()=>{
+      document.getElementById('back-top').classList.toggle('show',window.scrollY>400);
+    });
+  }
+
+  // Particles
+  startParticles(config.petal||'hearts',config.theme?.rose||'#e8405a',config.intensity||50);
+
+  // Music
+  if(config.musicSrc){
+    const audio=document.getElementById('bg-audio');
+    audio.src=config.musicSrc;
+    audio.volume=(config.musicVol||70)/100;
+    document.getElementById('music-vol-slider').value=config.musicVol||70;
+    document.getElementById('music-player').classList.remove('hidden');
+    document.getElementById('music-label').textContent=config.musicLabel||'Lagu Untukmu 💕';
+    audio.play().then(()=>document.getElementById('music-play-btn').textContent='⏸').catch(()=>{});
+  }
+}
+
+// ════════════════════════════════════════
+//  SCROLL PROGRESS
+// ════════════════════════════════════════
+function updateScrollProgress(){
+  const scrollTop=document.documentElement.scrollTop;
+  const docH=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+  document.getElementById('scroll-progress').style.width=(scrollTop/docH*100)+'%';
+}
+
+// ════════════════════════════════════════
+//  OPEN LETTER
+// ════════════════════════════════════════
+function openLetter(){
+  document.getElementById('intro-overlay').classList.add('hidden');
+  setTimeout(()=>{
+    document.getElementById('love-fill').style.width='100%';
+    let pct=0;
+    const iv=setInterval(()=>{
+      pct=Math.min(100,pct+1);
+      document.getElementById('meter-pct').textContent=pct+'%';
+      if(pct>=100)clearInterval(iv);
+    },25);
+  },400);
+  const audio=document.getElementById('bg-audio');
+  if(audio.src&&audio.paused){audio.play().then(()=>document.getElementById('music-play-btn').textContent='⏸').catch(()=>{})}
+  spawnHeartsAt(window.innerWidth/2,window.innerHeight/2,10);
+}
+
+// ════════════════════════════════════════
+//  MOOD BOARD
+// ════════════════════════════════════════
+function pickMood(key,el){
+  document.querySelectorAll('.mood-card').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const replies=config.moodReplies||{};
+  const msg=replies[key]||'Terima kasih sudah bilang! 💕';
+  const r=document.getElementById('mood-reply');
+  r.style.opacity='0';
+  setTimeout(()=>{r.textContent=msg;r.style.opacity='1'},200);
+  spawnHeartsAt(el.getBoundingClientRect().left+30,el.getBoundingClientRect().top,6);
+}
+
+// ════════════════════════════════════════
+//  QUIZ
+// ════════════════════════════════════════
+function buildQuiz(questions){
+  const c=document.getElementById('quiz-container');c.innerHTML='';
+  questions.forEach((q,qi)=>{
+    if(!q.q) return;
+    const opts=[q.a,'Tidak tahu','Lupa 😅','Hmm...'].filter(Boolean).sort(()=>Math.random()-.5);
+    const card=document.createElement('div');card.className='quiz-card';
+    card.innerHTML=`<div class="quiz-q">${qi+1}. ${q.q}</div><div class="quiz-opts">${opts.map(o=>`<button class="quiz-opt" onclick="checkAns(this,'${o}','${q.a}')">${o}</button>`).join('')}</div>`;
+    c.appendChild(card);
+  });
+  quizAnswers=new Array(questions.length).fill(false);
+}
+function checkAns(btn,chosen,correct){
+  const opts=btn.closest('.quiz-opts').querySelectorAll('.quiz-opt');
+  opts.forEach(b=>b.disabled=true);
+  if(chosen===correct){btn.classList.add('correct');spawnHeartsAt(btn.getBoundingClientRect().left,btn.getBoundingClientRect().top,5)}
+  else{btn.classList.add('wrong');opts.forEach(b=>{if(b.textContent===correct)b.classList.add('correct')})}
+  const allOpts=document.querySelectorAll('.quiz-opt:disabled');
+  const correct_count=[...allOpts].filter(b=>b.classList.contains('correct')).length;
+  const total=document.querySelectorAll('.quiz-card').length;
+  if([...document.querySelectorAll('.quiz-opts')].every(g=>[...g.querySelectorAll('.quiz-opt')].some(b=>b.disabled))){
+    document.getElementById('quiz-result').textContent=`Kamu benar ${correct_count} dari ${total}! ${correct_count===total?'Wow kamu kenal aku banget! 💕':'Yuk kita lebih saling kenal lagi! 🌸'}`;
+  }
+}
+
+// ════════════════════════════════════════
+//  COUNTDOWN
+// ════════════════════════════════════════
+function startCountdown(dateStr){
+  function tick(){
+    const diff=new Date(dateStr)-Date.now();
+    if(diff<=0){['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id=>document.getElementById(id).textContent='00');return}
+    document.getElementById('cd-days').textContent=String(Math.floor(diff/86400000)).padStart(2,'0');
+    document.getElementById('cd-hours').textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cd-mins').textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cd-secs').textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+  }
+  tick();setInterval(tick,1000);
+}
+
+// ════════════════════════════════════════
+//  RESPONSE
+// ════════════════════════════════════════
+function handleYes(){
+  if(config.features?.fireworks)spawnFireworks();
+  spawnManyHearts();
+  document.getElementById('cel-msg').textContent=config.celMsg||'Yeay!!! 💕';
+  document.getElementById('cel-from').textContent='— '+(config.sender||'Seseorang')+' ❤️';
+  document.getElementById('cel-stickers').textContent=(config.stickers||[]).join('')+'🎉🎊';
+  document.getElementById('celebration').classList.add('open');
+}
+function closeCelebration(){
+  document.getElementById('celebration').classList.remove('open');
+}
+
+function escapeNo(btn){
+  if(!config.features?.escape)return;
+  noMoveCount++;
+  const msgs=['Hmm... tidak 🙈','Masa sih? 🥺','Pikir lagi deh... 💭','Yakin? 😢',config.noEscapeMsg||'Pliss... 🙏'];
+  btn.textContent=msgs[Math.min(Math.floor(noMoveCount/5),msgs.length-1)];
+  if(noMoveCount>25){btn.style.display='none';return}
+  btn.classList.add('escape');
+  btn.style.left=Math.random()*(window.innerWidth-150)+'px';
+  btn.style.top=Math.random()*(window.innerHeight-60)+'px';
+}
+
+// ════════════════════════════════════════
+//  HEARTS & FIREWORKS
+// ════════════════════════════════════════
+document.addEventListener('click',e=>{
+  if(!config.features?.hearts)return;
+  if(document.getElementById('page-viewer').classList.contains('active')){
+    spawnHeartsAt(e.clientX,e.clientY,4);
+  }
+});
+
+function spawnHeartsAt(x,y,count){
+  const emojis=['💗','💕','❤️','💖','✨','🌸','💫'];
+  for(let i=0;i<count;i++){
+    const h=document.createElement('div');h.className='floating-heart';
+    h.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    h.style.left=(x+(Math.random()-.5)*50)+'px';
+    h.style.top=y+'px';
+    h.style.animationDuration=(2+Math.random()*2)+'s';
+    h.style.fontSize=(1.2+Math.random())+'rem';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),4000);
+  }
+}
+function spawnManyHearts(){
+  for(let i=0;i<35;i++){
+    setTimeout(()=>spawnHeartsAt(Math.random()*window.innerWidth,window.innerHeight*.85,3),i*60);
+  }
+}
+function spawnFireworks(){
+  for(let i=0;i<10;i++){
+    setTimeout(()=>{
+      const fx=Math.random()*canvas.width,fy=Math.random()*canvas.height*.5;
+      for(let j=0;j<50;j++){
+        const p=new Particle(['stars','hearts','petals'][Math.floor(Math.random()*3)],
+          [config.theme?.rose,config.theme?.gold,'#ff9ab2','#fff'][Math.floor(Math.random()*4)]);
+        p.x=fx;p.y=fy;p.speedY=(Math.random()-.5)*6;p.speedX=(Math.random()-.5)*6;p.opacity=1;
+        particleArr.push(p);
+      }
+    },i*180);
+  }
+}
+
+// ════════════════════════════════════════
+//  MUSIC
+// ════════════════════════════════════════
+function toggleMusic(){
+  const audio=document.getElementById('bg-audio');
+  const btn=document.getElementById('music-play-btn');
+  const bars=document.getElementById('music-bars');
+  if(audio.paused){audio.play();btn.textContent='⏸';bars.classList.remove('paused')}
+  else{audio.pause();btn.textContent='▶';bars.classList.add('paused')}
+}
+function setVol(v){document.getElementById('bg-audio').volume=v/100}
+
+// ════════════════════════════════════════
+//  LIGHTBOX
+// ════════════════════════════════════════
+function openLightbox(src,cap){
+  document.getElementById('lightbox-img').src=src;
+  document.getElementById('lightbox-cap').textContent=cap||'';
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('open')}
+document.getElementById('lightbox').addEventListener('click',e=>{if(e.target===document.getElementById('lightbox'))closeLightbox()});
+
+// ════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  const params=new URLSearchParams(location.search);
+  if(params.has('pesan')){loadViewer()}
+  else{startParticles('hearts','#e8405a',20)}
+});
+</script>
 </body>
 </html>
